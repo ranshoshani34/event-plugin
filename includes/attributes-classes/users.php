@@ -1,67 +1,137 @@
 <?php
+/**
+ * Class file Users attribute.
+ *
+ * @package event-plugin.
+ */
 
+/**
+ * Class Users.
+ */
 class Users extends Event_Attribute {
-    private $users_array;
 
-    public function __construct() {
-        // this array will be in the form of nickname => WP_USER object
-        $this->users_array = array();
+	/**
+	 * Array in the form of nickname => WP_USER object to represent the users.
+	 *
+	 * @var array
+	 */
+	private $users_array;
 
-        $users = get_users();
+	/**
+	 * Constructor to create the users array.
+	 */
+	public function __construct() {
+		$this->users_array = array();
 
-        foreach ($users as $user){
-            $this->users_array[$user->get('display_name')] = $user;
-        }
-    }
+		$users = get_users();
 
-    public function render_metabox($post_id) {
-        ?>
-        <p>Users to assign:</p>
-        <?php
-        foreach ($this->users_array as $username => $user){
-            ?>
-            <br>
+		foreach ( $users as $user ) {
+			$this->users_array[ $user->get( 'display_name' ) ] = $user;
+		}
+	}
 
-            <input type="checkbox" id="<?php echo $username?>" name="<?php echo $username?>">
-            <label for="<?php echo $username?>"><?php echo $username?></label>
-            <br>
-            <?php
-        }
-    }
+	/**
+	 * Description - method to render a custom metabox to receive the attribute.
+	 *
+	 * @param int $post_id - the id of the post to render.
+	 */
+	public function render_metabox( int $post_id ) : void {
+		?>
+		<p>Users to assign:</p>
+		<?php
+		foreach ( $this->users_array as $username => $user ) {
+			?>
+			<br>
 
-    public function get_value($post_id) {
-        // empty
-    }
+			<input type="checkbox" id="<?php echo esc_attr( $username ); ?>" name="<?php echo esc_attr( $username ); ?>">
+			<label for="<?php echo esc_attr( $username ); ?>"><?php echo esc_html( $username ); ?></label>
+			<br>
+			<?php
+		}
+	}
 
-    public function update_value($post_id) {
-        $emails = array();
-        foreach ($this->users_array as $username => $user){
-            update_post_meta( $post_id, $username, isset( $_POST[$username]));
-            if ($this->is_user_assigned($username, $post_id)) {
-                $emails[] = $user->get('user_email');
-            }
-        }
-        $this->mail_user($emails, "New event published",
-            $this->generate_mail_message($post_id));
-    }
+	/**
+	 * Description - method to get the attribute value from the database.
+	 * this method is supposed to be empty.
+	 *
+	 * @param int $post_id - the post id.
+	 *
+	 * @return string
+	 */
+	public function get_value( int $post_id ) : string {
+		// empty.
+		return '';
+	}
 
-    public function render_single_field($post_id) {
-        //empty
-    }
+	/**
+	 * Description - method to update the database from the submitted form.
+	 *
+	 * @param int $post_id - the post id.
+	 */
+	public function update_value( int $post_id ) : void {
+		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( __FILE__ ) ) );
+		if ( ! $is_nonce_valid ) {
+			return;
+		}
 
-    private function mail_user($emails, $title, $message){
-        $headers = array('Content-Type: text/html');
-        wp_mail($emails, $title, $message, $headers);
-    }
+		$emails = array();
+		foreach ( $this->users_array as $username => $user ) {
+			update_post_meta( $post_id, $username, isset( $_POST[ $username ] ) );
 
-    private function generate_mail_message($post_id): string {
-        $event_title = get_the_title($post_id);
-        $event_link = get_permalink($post_id);
+			if ( $this->is_user_assigned( $username, $post_id ) ) {
+				$emails[] = $user->get( 'user_email' );
+			}
+		}
+		$this->mail_user(
+			$emails,
+			$this->generate_mail_message( $post_id )
+		);
+	}
 
-        return 'A new event was added: <br>' . $event_title . '<br>link:<br>' . $event_link;
-    }
+	/**
+	 * Description - method to render the field about the attribute in the event page (single).
+	 * this method is supposed to be empty.
+	 *
+	 * @param int $post_id - the post id.
+	 */
+	public function render_single_field( int $post_id ) : void {
+		// empty.
+	}
 
-    private function is_user_assigned($username, $post_id): bool {
-        return get_post_meta($post_id, $username, true);
-    }
+	/**
+	 * Method to mail a message to an array of emails.
+	 *
+	 * @param array  $emails - array of emails to send the notification to.
+	 * @param string $message - message to send containing event details.
+	 */
+	private function mail_user( array $emails, string $message ) : void {
+		$headers = array( 'Content-Type: text/html' );
+		wp_mail( $emails, 'New event published', $message, $headers );
+	}
+
+	/**
+	 * Method to generate email message containing event information.
+	 *
+	 * @param int $post_id - the post id to retrieve event information.
+	 *
+	 * @return string
+	 */
+	private function generate_mail_message( int $post_id ): string {
+		$event_title = get_the_title( $post_id );
+		$event_link  = get_permalink( $post_id );
+
+		return 'A new event was added: <br>' . $event_title . '<br>link:<br>' . $event_link;
+	}
+
+	/**
+	 * Method to test if a user is assigned to the event.
+	 *
+	 * @param string $username - the username of the user.
+	 * @param int    $post_id - the pod id of the event.
+	 *
+	 * @return bool
+	 */
+	private function is_user_assigned( string $username, int $post_id ): bool {
+		return get_post_meta( $post_id, $username, true );
+	}
 }
