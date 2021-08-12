@@ -42,7 +42,7 @@ class Template_Manager {
 
 		if ( 'calendar-template.php' === basename( $page_template ) ) {
 			$template = WP_PLUGIN_DIR . '/event-plugin/templates/calendar-template.php';
-		} elseif ( is_singular() ) {
+		} elseif ( is_single() ) {
 			$template = WP_PLUGIN_DIR . '/event-plugin/templates/single.php';
 		}
 

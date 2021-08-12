@@ -41,19 +41,22 @@ class Weekly extends Event_Attribute {
 	public function get_value( int $post_id ) : string {
 		return get_post_meta( $post_id, 'event-weekly', true );
 	}
+
 	/**
 	 * Description - method to update the database from the submitted form.
 	 *
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( __FILE__ ) ) );
+		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
 		if ( ! $is_nonce_valid ) {
 			return;
 		}
 
 		update_post_meta( $post_id, 'event-weekly', isset( $_POST['rep-weekly'] ) );
 	}
+
+
 	/**
 	 * Description - method to render the field about the attribute in the event page (single).
 	 *

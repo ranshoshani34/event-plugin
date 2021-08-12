@@ -43,7 +43,7 @@ class Details extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( __FILE__ ) ) );
+		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
 		if ( ! $is_nonce_valid ) {
 			return;
 		}

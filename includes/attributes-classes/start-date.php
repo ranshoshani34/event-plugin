@@ -49,13 +49,21 @@ class Start_Date extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( __FILE__ ) ) );
+
+
+		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
 		if ( ! $is_nonce_valid ) {
 			return;
 		}
 
 		if ( isset( $_POST['rep-event-start-date'] ) ) {
-			update_post_meta( $post_id, 'event-start-date', strtotime( sanitize_text_field( wp_unslash( $_POST['rep-event-start-date'] ) ) ) );
+			update_post_meta(
+				$post_id,
+				'event-start-date',
+				strtotime(
+					sanitize_text_field( wp_unslash( $_POST['rep-event-start-date'] ) )
+				)
+			);
 		}
 	}
 
@@ -65,10 +73,9 @@ class Start_Date extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function render_single_field( int $post_id ) : void {
-
 		$start_date = $this->get_value( $post_id );
 		?>
-		<h3>Start date:  <?php echo esc_html( gmdate( 'd/m/y', $start_date ) ); ?></h3>
+		<h3>Start date:  <?php echo esc_html( gmdate( 'd/m/y', (int) $start_date ) ); ?></h3>
 		<?php
 	}
 }

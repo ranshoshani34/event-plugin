@@ -7,7 +7,7 @@
  * @package event-plugin.
  */
 
-require '../includes/event-data.php';
+require 'event-data.php';
 
 get_header();
 $query = new WP_Query( array( 'post_type' => 'event' ) );
@@ -18,7 +18,7 @@ while ( $query->have_posts() ) :
 	$query->the_post();
 	$event_start_date = get_post_meta( $post->ID, 'event-start-date', true );
 	$event_is_weekly  = get_post_meta( $post->ID, 'event-weekly', true );
-	$events[]         = new Event_Data( $event_start_date, get_permalink( $post ), get_the_title( $post ), $event_is_weekly );
+	$events[]         = new Event_Data( (int) $event_start_date, get_permalink( $post ), get_the_title( $post ), $event_is_weekly );
 endwhile;
 
 /**
@@ -105,7 +105,7 @@ function draw_calendar( int $month, int $year, array $events ) : string {
 }
 
 // echo title with month and year.
-echo '<h2>' . gmdate( 'F' ) . gmdate( 'Y' ) . '</>'; // phpcs:ignore
+echo '<h2>' . gmdate( 'F' ) . ' ' . gmdate( 'Y' ) . '</>'; // phpcs:ignore
 echo draw_calendar( gmdate( 'm' ), gmdate( 'Y' ), $events ); // phpcs:ignore
 
 get_footer();

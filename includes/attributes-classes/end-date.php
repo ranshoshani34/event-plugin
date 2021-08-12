@@ -42,7 +42,7 @@ class End_Date extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( __FILE__ ) ) );
+		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
 		if ( ! $is_nonce_valid ) {
 			return;
 		}
@@ -62,7 +62,7 @@ class End_Date extends Event_Attribute {
 
 		if ( ! empty( $end_date ) ) {
 			?>
-			<h3>End date: <?php echo esc_html( gmdate( 'd/m/y', $end_date ) ); ?></h3>
+			<h3>End date: <?php echo esc_html( gmdate( 'd/m/y', (int) $end_date ) ); ?></h3>
 			<?php
 		}
 	}

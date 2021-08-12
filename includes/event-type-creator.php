@@ -61,7 +61,7 @@ class Event_Type_Creator {
 			'public'       => true,
 			'show_in_menu' => true,
 			'menu_icon'    => IMAGES . 'event.svg',
-			'has_archive'  => true,
+			'has_archive'  => false,
 			'rewrite'      => true,
 			'supports'     => $supports,
 		);
@@ -88,7 +88,7 @@ class Event_Type_Creator {
 	 */
 	public function render_metabox() {
 		// generate a nonce field.
-		wp_nonce_field( basename( __FILE__ ), 'rep-event-info-nonce' );
+		wp_nonce_field( basename( ROOT ), 'rep-event-info-nonce' );
 
 		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
 			$attribute->render_metabox( get_the_ID() );
@@ -114,12 +114,14 @@ class Event_Type_Creator {
 		$is_autosave    = wp_is_post_autosave( $post_id );
 		$is_revision    = wp_is_post_revision( $post_id );
 		$is_valid_nonce = isset( $_POST['rep-event-info-nonce'] ) &&
-			( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( __FILE__ ) ) );
+			( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
 
 		// exit depending on the save status or if the nonce is not valid.
 		if ( $is_autosave || $is_revision || ! $is_valid_nonce ) {
 			return;
 		}
+
+		// loop through the attributes and update internally the database values.
 		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
 			$attribute->update_value( $post_id );
 		}
