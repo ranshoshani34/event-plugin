@@ -21,6 +21,7 @@ const STYLES = ROOT . '/css/';
 require 'includes/event-type-creator.php';
 require 'includes/template-manager.php';
 
+
 /**
  * Main Event Plugin class
  * The main class that initiates and runs the plugin.
@@ -102,9 +103,19 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function i18n() {
-
+		register_activation_hook( basename( ROOT ), array( $this, 'activate' ) );
 		load_plugin_textdomain( 'event-plugin' );
 
+	}
+
+	/**
+	 * 'on activation' function.
+	 *
+	 * @since 1.0.0
+	 * @access public
+	 */
+	public function activate() {
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -186,7 +197,7 @@ final class Event_Plugin {
 	public function init() {
 
 		$this->i18n();
-		flush_rewrite_rules();
+		wp_enqueue_style( 'style.css', STYLES . 'style.css', array(), '1' );
 
 		$event_type_creator = new Event_Type_Creator();
 		$template_manager   = new Template_Manager();

@@ -2,7 +2,7 @@
 /**
  * File for class Calendar_Widget.
  *
- * @package elementor-event-widget
+ * @package event-plugin.
  */
 
 

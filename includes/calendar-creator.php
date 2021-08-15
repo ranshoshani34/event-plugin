@@ -1,16 +1,19 @@
 <?php
 /**
- * class eve
+ * Class file for event creator class.
  *
  * @package event-plugin.
  */
 
 require 'event-data.php';
 
+/**
+ * Class Calendar_Creator for drawing the calendar with html.
+ */
 class Calendar_Creator {
 
 	/**
-	 * Function to draw the calendar as html.
+	 * Method to draw the calendar as html.
 	 *
 	 * @param int $month - The month to draw (1 - 12).
 	 * @param int $year - The year to draw (four digits).
@@ -32,8 +35,7 @@ class Calendar_Creator {
 		$calendar = '<table class="calendar">';
 
 		$headings  = array( 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' );
-		$calendar .= '<tr class="calendar-row"><td class="calendar-day-head">'
-					 . implode( '</td><td class="calendar-day-head">', $headings ) . '</td></tr>';
+		$calendar .= '<tr class="calendar-row"><td class="calendar-day-head">' . implode( '</td><td class="calendar-day-head">', $headings ) . '</td></tr>';
 
 		$running_day       = gmdate( 'w', mktime( 0, 0, 0, $month, 1, $year ) );
 		$num_days_in_month = gmdate( 't', mktime( 0, 0, 0, $month, 1, $year ) );
@@ -100,11 +102,21 @@ class Calendar_Creator {
 		return $calendar;
 	}
 
-	public static function generate_calendar_html() {
+	/**
+	 * Method to generate the necessary html to render the calendar.
+	 *
+	 * @return string
+	 */
+	public static function generate_calendar_html() : string {
 		return self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) );
 	}
 
-	public static function generate_calendar_header_html() {
+	/**
+	 * Method to render a header with month and year information.
+	 *
+	 * @return string
+	 */
+	public static function generate_calendar_header_html() : string {
 		return '<h2>' . gmdate( 'F' ) . ' ' . gmdate( 'Y' ) . '</>';
 	}
 
