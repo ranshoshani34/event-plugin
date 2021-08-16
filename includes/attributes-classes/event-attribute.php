@@ -14,9 +14,9 @@ abstract class Event_Attribute {
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
 	 *
-	 * @param int $post_id - the id of the post to render.
+	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
-	abstract public function render_metabox( int $post_id ) : void;
+	abstract public function render_metabox( int $post_id = 0 ) : void;
 
 	/**
 	 * Description - method to get the attribute value from the database.
@@ -40,12 +40,6 @@ abstract class Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	abstract public function render_single_field( int $post_id ) : void;
-
-	/**
-	 * Method to check if nonce is valid.
-	 *
-	 * @return bool
-	 */
 
 
 }

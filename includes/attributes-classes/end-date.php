@@ -13,11 +13,15 @@ class End_Date extends Event_Attribute {
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
 	 *
-	 * @param int $post_id - the id of the post to render.
+	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
-	public function render_metabox( int $post_id ) : void {
-		$event_end_date = $this->get_value( $post_id );
+	public function render_metabox( int $post_id = 0 ) : void {
+		if ( 0 !== $post_id ) {
+			$event_end_date = $this->get_value( $post_id );
+		}
+
 		$event_end_date = ! empty( $event_end_date ) ? $event_end_date : time();
+
 		?>
 		<label for="rep-event-end-date"><?php esc_html_e( 'Event End Date:', 'rep' ); ?>
 		</label>

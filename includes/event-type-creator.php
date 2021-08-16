@@ -18,10 +18,30 @@ class Event_Type_Creator {
 	private $attributes_manager;
 
 	/**
+	 * Singleton instance.
+	 *
+	 * @var Event_Type_Creator
+	 */
+	private static $instance;
+
+	/**
 	 * Constructor to initialize attributes manager.
 	 */
-	public function __construct() {
-		$this->attributes_manager = new Attributes_Manager();
+	private function __construct() {
+		$this->attributes_manager = Attributes_Manager::instance();
+	}
+
+	/**
+	 * Instance method to get the singleton.
+	 *
+	 * @return Event_Type_Creator
+	 */
+	public static function instance() : Event_Type_Creator {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
 	}
 
 	/**
@@ -124,6 +144,35 @@ class Event_Type_Creator {
 		// loop through the attributes and update internally the database values.
 		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
 			$attribute->update_value( $post_id );
+		}
+
+	}
+	// todo ajax.
+	public function create_event_instance() {
+		// insert the post and set the category.
+		$post_id = wp_insert_post(
+			array(
+				'post_type'      => 'event',
+				'post_title'     => 'TEST',
+				'post_content'   => '',
+				'post_status'    => 'publish',
+				'comment_status' => 'closed',   // if you prefer.
+				'ping_status'    => 'closed',      // if you prefer.
+			)
+		);
+
+		if ( $post_id ) {
+			// todo.
+		}
+	}
+
+	public function echo_form_html() {
+		// generate a nonce field.
+		wp_nonce_field( basename( ROOT ), 'rep-event-info-nonce' );
+
+		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
+			$attribute->render_metabox();
+			echo '<br><br>';
 		}
 	}
 

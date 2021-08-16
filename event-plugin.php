@@ -13,7 +13,6 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
-
 define( 'ROOT', plugins_url( '', __FILE__ ) );
 const IMAGES = ROOT . '/img/';
 const STYLES = ROOT . '/css/';
@@ -199,10 +198,10 @@ final class Event_Plugin {
 		$this->i18n();
 		wp_enqueue_style( 'style.css', STYLES . 'style.css', array(), '1' );
 
-		$event_type_creator = new Event_Type_Creator();
-		$template_manager   = new Template_Manager();
+		$event_type_creator = Event_Type_Creator::instance();
 		$event_type_creator->initialize();
-		$template_manager->initialize();
+
+		Template_Manager::initialize();
 	}
 
 	/**
@@ -238,14 +237,11 @@ final class Event_Plugin {
 
 		// Include Widget files.
 		require_once __DIR__ . '/widgets/calendar-widget.php';
-		// todo
-		// require_once __DIR__ . '/widgets/event-creator-widget.php';
+		require_once __DIR__ . '/widgets/event-creator-widget.php';
 
 		// Register widget.
 		Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Calendar_Widget() );
-
-		// todo
-		// \Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Event_Creator_Widget() );
+		Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Event_Creator_Widget() );
 	}
 
 	/**

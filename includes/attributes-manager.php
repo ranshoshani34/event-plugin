@@ -25,6 +25,13 @@ class Attributes_Manager {
 	public $attributes_array = array();
 
 	/**
+	 * Singleton instance.
+	 *
+	 * @var Attributes_Manager
+	 */
+	private static $instance;
+
+	/**
 	 *  Constructor to add all the attributes instances to the attributes array.
 	 */
 	public function __construct() {
@@ -36,4 +43,18 @@ class Attributes_Manager {
 		$this->attributes_array[] = new Weekly();
 		$this->attributes_array[] = new Users();
 	}
+
+	/**
+	 * Instance method to get the singleton.
+	 *
+	 * @return Attributes_Manager
+	 */
+	public static function instance() : Attributes_Manager {
+		if ( is_null( self::$instance ) ) {
+			self::$instance = new self();
+		}
+
+		return self::$instance;
+	}
+
 }

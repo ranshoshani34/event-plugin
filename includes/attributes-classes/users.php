@@ -33,9 +33,9 @@ class Users extends Event_Attribute {
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
 	 *
-	 * @param int $post_id - the id of the post to render.
+	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
-	public function render_metabox( int $post_id ) : void {
+	public function render_metabox( int $post_id = 0 ) : void {
 		?>
 		<p>Users to assign:</p>
 		<?php

@@ -12,9 +12,9 @@ class Template_Manager {
 	/**
 	 * Method to add the necessary filters.
 	 */
-	public function initialize() {
-		add_filter( 'theme_page_templates', array( $this, 'add_page_template' ) );
-		add_filter( 'template_include', array( $this, 'redirect_page_template' ) );
+	public static function initialize() {
+		add_filter( 'theme_page_templates', 'Template_Manager::add_page_template' );
+		add_filter( 'template_include', 'Template_Manager::redirect_page_template' );
 	}
 
 	/**
@@ -24,7 +24,7 @@ class Template_Manager {
 	 *
 	 * @return array
 	 */
-	public function add_page_template( array $templates ) : array {
+	public static function add_page_template( array $templates ) : array {
 		$templates['calendar-template.php'] = 'Calendar';
 		return $templates;
 	}
@@ -36,7 +36,7 @@ class Template_Manager {
 	 *
 	 * @return string
 	 */
-	public function redirect_page_template( string $template ) : string {
+	public static function redirect_page_template( string $template ) : string {
 		$post          = get_post();
 		$page_template = get_post_meta( $post->ID, '_wp_page_template', true );
 

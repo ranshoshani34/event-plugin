@@ -13,16 +13,19 @@ class Details extends Event_Attribute {
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
 	 *
-	 * @param int $post_id - the id of the post to render.
+	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
-	public function render_metabox( int $post_id ) : void {
-		$event_details = $this->get_value( $post_id );
+	public function render_metabox( int $post_id = 0 ) : void {
+		if (0 !== $post_id) {
+			$event_details = $this->get_value( $post_id );
+		}
+
+		$event_details = ! empty ($event_details) ? $event_details : '';
 
 		?>
 		<label for="rep-event-details"><?php esc_html_e( 'Event Details:', 'rep' ); ?>
 		</label>
-		<textarea class="widefat" id="rep-event-details" name="rep-event-details">
-			<?php echo esc_html( $event_details ); ?></textarea>
+		<textarea class="widefat" id="rep-event-details" name="rep-event-details"><?php echo esc_html( $event_details ); ?></textarea>
 		<?php
 	}
 

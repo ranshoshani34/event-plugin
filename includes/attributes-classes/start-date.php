@@ -13,11 +13,15 @@ class Start_Date extends Event_Attribute {
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
 	 *
-	 * @param int $post_id - the id of the post to render.
+	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
-	public function render_metabox( int $post_id ) : void {
-		$event_start_date = $this->get_value( $post_id );
+	public function render_metabox( int $post_id = 0 ) : void {
+
+		if ( 0 !== $post_id ) {
+			$event_start_date = $this->get_value( $post_id );
+		}
 		$event_start_date = ! empty( $event_start_date ) ? $event_start_date : time();
+
 		?>
 		<label for="rep-event-start-date">
 			<?php esc_html_e( 'Event Start Date:', 'rep' ); ?>
@@ -49,7 +53,6 @@ class Start_Date extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-
 
 		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
 		if ( ! $is_nonce_valid ) {
