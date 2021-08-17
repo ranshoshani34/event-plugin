@@ -8,7 +8,7 @@
 /**
  * Class Users.
  */
-class Users extends Event_Attribute {
+class Users extends Custom_Post_Attribute {
 
 	/**
 	 * Array in the form of nickname => WP_USER object to represent the users.
@@ -21,13 +21,7 @@ class Users extends Event_Attribute {
 	 * Constructor to create the users array.
 	 */
 	public function __construct() {
-		$this->users_array = array();
-
-		$users = get_users();
-
-		foreach ( $users as $user ) {
-			$this->users_array[ $user->get( 'display_name' ) ] = $user;
-		}
+		$this->users_array = get_users();
 	}
 
 	/**
@@ -36,17 +30,31 @@ class Users extends Event_Attribute {
 	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
 	public function render_metabox( int $post_id = 0 ) : void {
+		$is_checked = false;
 		?>
 		<p>Users to assign:</p>
 		<?php
-		foreach ( $this->users_array as $username => $user ) {
+		foreach ( $this->users_array as $user ) {
+			$user_id = $user->get( 'ID' );
+
+			if ( 0 !== $post_id ) {
+				$is_checked = $this->is_user_assigned( $user_id, $post_id );
+			}
+
 			?>
 			<br>
 
-			<input type="checkbox" id="<?php echo esc_attr( $username ); ?>" name="<?php echo esc_attr( $username ); ?>">
-			<label for="<?php echo esc_attr( $username ); ?>"><?php echo esc_html( $username ); ?></label>
+			<input type="checkbox" id="<?php echo esc_attr( $user_id ); ?>" name="<?php echo esc_attr( $user_id ); ?>"
+				<?php
+				if ( $is_checked ) {
+					echo 'checked';
+				}
+				?>
+			>
+			<label for="<?php echo esc_attr( $user_id ); ?>"><?php echo esc_html( $user->get( 'display_name' ) ); ?></label>
 			<br>
 			<?php
+			$is_checked = false;
 		}
 	}
 
@@ -69,17 +77,29 @@ class Users extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
-		if ( ! $is_nonce_valid ) {
-			return;
+		foreach ( $this->users_array as $user ) {
+			$user_id = $user->get( 'ID' );
+
+			update_post_meta( $post_id, $user_id, isset( $_POST[ $user_id ] ) ); //phpcs:ignore
 		}
+	}
+
+	/**
+	 * Method that does any action that should happen after a post is saved.
+	 *
+	 * @param int $post_id id of the post.
+	 */
+	public function after_save_post( int $post_id ) {
+
+		$this->update_value( $post_id );
 
 		$emails = array();
-		foreach ( $this->users_array as $username => $user ) {
-			update_post_meta( $post_id, $username, isset( $_POST[ $username ] ) );
+		foreach ( $this->users_array as $user ) {
+			$user_id = $user->get( 'ID' );
 
-			if ( $this->is_user_assigned( $username, $post_id ) ) {
+			if ( $this->is_user_assigned( $user_id, $post_id ) && ! $this->is_user_mailed( $user_id, $post_id ) ) {
 				$emails[] = $user->get( 'user_email' );
+				update_post_meta( $post_id, $user_id . '-mailed', true );
 			}
 		}
 		$this->mail_user(
@@ -126,12 +146,16 @@ class Users extends Event_Attribute {
 	/**
 	 * Method to test if a user is assigned to the event.
 	 *
-	 * @param string $username - the username of the user.
+	 * @param string $user_id - the username of the user.
 	 * @param int    $post_id - the pod id of the event.
 	 *
 	 * @return bool
 	 */
-	private function is_user_assigned( string $username, int $post_id ): bool {
-		return get_post_meta( $post_id, $username, true );
+	private function is_user_assigned( string $user_id, int $post_id ): bool {
+		return get_post_meta( $post_id, $user_id, true );
+	}
+
+	private function is_user_mailed( string $user_id, int $post_id ): bool {
+		return get_post_meta( $post_id, $user_id . '-mailed', true );
 	}
 }

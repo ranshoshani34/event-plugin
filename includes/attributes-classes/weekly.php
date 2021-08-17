@@ -8,7 +8,7 @@
 /**
  * Class Weekly.
  */
-class Weekly extends Event_Attribute {
+class Weekly extends Custom_Post_Attribute {
 
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
@@ -52,12 +52,7 @@ class Weekly extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
-		if ( ! $is_nonce_valid ) {
-			return;
-		}
-
-		update_post_meta( $post_id, 'event-weekly', isset( $_POST['rep-weekly'] ) );
+		update_post_meta( $post_id, 'event-weekly', isset( $_POST['rep-weekly'] ) ); //phpcs:ignore
 	}
 
 
@@ -80,4 +75,14 @@ class Weekly extends Event_Attribute {
 		</h3>
 		<?php
 	}
+
+	/**
+	 * Method that does any action that should happen after a post is saved.
+	 *
+	 * @param int $post_id id of the post.
+	 */
+	public function after_save_post( int $post_id ) {
+		$this->update_value( $post_id );
+	}
+
 }

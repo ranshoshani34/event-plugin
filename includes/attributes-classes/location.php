@@ -8,7 +8,7 @@
 /**
  * Class Location.
  */
-class Location extends Event_Attribute {
+class Location extends Custom_Post_Attribute {
 
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
@@ -54,13 +54,9 @@ class Location extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
-		if ( ! $is_nonce_valid ) {
-			return;
-		}
 
 		if ( isset( $_POST['rep-event-venue'] ) ) {
-			update_post_meta( $post_id, 'event-venue', sanitize_text_field( wp_unslash( $_POST['rep-event-venue'] ) ) );
+			update_post_meta( $post_id, 'event-venue', sanitize_text_field( wp_unslash( $_POST['rep-event-venue'] ) ) );//phpcs:ignore
 		}
 	}
 
@@ -74,5 +70,14 @@ class Location extends Event_Attribute {
 		?>
 		<h3>Location:  <?php echo esc_html( $event_venue ); ?></h3>
 		<?php
+	}
+
+	/**
+	 * Method that does any action that should happen after a post is saved.
+	 *
+	 * @param int $post_id id of the post.
+	 */
+	public function after_save_post( int $post_id ) {
+		$this->update_value( $post_id );
 	}
 }

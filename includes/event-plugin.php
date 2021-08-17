@@ -1,25 +1,9 @@
-<?php //phpcs:ignore
-
+<?php
 /**
- * Plugin Name: Elementor Event Widget
- * Description: Custom event extension with 'calendar' widget and 'create event' widget.
- * Version:     1.0.0
- * Author:      Ran Shoshani
- * Text Domain: elementor-event-widget.
+ *  File for main plugin class.
  *
  * @package event-plugin.
  */
-
-if ( ! defined( 'ABSPATH' ) ) {
-	exit; // Exit if accessed directly.
-}
-define( 'ROOT', plugins_url( '', __FILE__ ) );
-const IMAGES = ROOT . '/img/';
-const STYLES = ROOT . '/css/';
-
-require 'includes/event-type-creator.php';
-require 'includes/template-manager.php';
-
 
 /**
  * Main Event Plugin class
@@ -28,6 +12,8 @@ require 'includes/template-manager.php';
  * @since 1.0.0
  */
 final class Event_Plugin {
+
+
 
 	/**
 	 * Plugin Version
@@ -64,6 +50,20 @@ final class Event_Plugin {
 	private static $instance = null;
 
 	/**
+	 * Images path const.
+	 *
+	 * @var string Images path.
+	 */
+	const IMAGES = EVENT_PLUGIN_ROOT . '/img/';
+
+	/**
+	 * Styles path const.
+	 *
+	 * @var string Styles path.
+	 */
+	const STYLES = EVENT_PLUGIN_ROOT . '/css/';
+
+	/**
 	 * Instance
 	 * Ensures only one instance of the class is loaded or can be loaded.
 	 *
@@ -88,9 +88,8 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function __construct() {
-
+		register_activation_hook( basename( EVENT_PLUGIN_ROOT ), array( $this, 'activate' ) );
 		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
-
 	}
 
 	/**
@@ -102,7 +101,6 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function i18n() {
-		register_activation_hook( basename( ROOT ), array( $this, 'activate' ) );
 		load_plugin_textdomain( 'event-plugin' );
 
 	}
@@ -194,9 +192,10 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function init() {
-
+		flush_rewrite_rules();
 		$this->i18n();
-		wp_enqueue_style( 'style.css', STYLES . 'style.css', array(), '1' );
+		// todo do more functions.
+		wp_enqueue_style( 'style.css', self::STYLES . 'style.css', array(), '1' );
 
 		$event_type_creator = Event_Type_Creator::instance();
 		$event_type_creator->initialize();
@@ -236,8 +235,8 @@ final class Event_Plugin {
 	public function init_widgets() {
 
 		// Include Widget files.
-		require_once __DIR__ . '/widgets/calendar-widget.php';
-		require_once __DIR__ . '/widgets/event-creator-widget.php';
+		require_once WP_PLUGIN_DIR . '/event-plugin/widgets/calendar-widget.php';
+		require_once WP_PLUGIN_DIR . '/event-plugin/widgets/event-creator-widget.php';
 
 		// Register widget.
 		Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Calendar_Widget() );
@@ -338,4 +337,3 @@ final class Event_Plugin {
 
 }
 
-Event_Plugin::instance();

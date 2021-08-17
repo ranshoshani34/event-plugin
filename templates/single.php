@@ -5,7 +5,7 @@
  * @package event-plugin.
  */
 
-$attributes_manager = new Attributes_Manager();
+$attributes_manager = Attributes_Manager::instance();
 
 get_header();
 ?>
@@ -25,9 +25,8 @@ get_header();
 			if ( has_post_thumbnail() ) {
 				the_post_thumbnail( 'medium' );
 			}
-
 			foreach ( $attributes_manager->attributes_array as $attribute ) {
-				$attribute->render_single_field( $post->ID );
+				$attribute->render_single_field( get_the_ID() );
 			}
 
 		endwhile;

@@ -4,7 +4,7 @@
  *
  * @package event-plugin.
  */
-require 'attributes-classes/event-attribute.php';
+require 'attributes-classes/custom-post-attribute.php';
 require 'attributes-classes/start-date.php';
 require 'attributes-classes/end-date.php';
 require 'attributes-classes/location.php';
@@ -32,16 +32,26 @@ class Attributes_Manager {
 	private static $instance;
 
 	/**
-	 *  Constructor to add all the attributes instances to the attributes array.
+	 *  Method to add all the attributes instances to the attributes array.
 	 */
-	public function __construct() {
+	public function register_attributes() {
 
-		$this->attributes_array[] = new Start_Date();
-		$this->attributes_array[] = new End_Date();
-		$this->attributes_array[] = new Location();
-		$this->attributes_array[] = new Details();
-		$this->attributes_array[] = new Weekly();
-		$this->attributes_array[] = new Users();
+		$this->register_new_attribute( new Start_Date() );
+		$this->register_new_attribute( new End_Date() );
+		$this->register_new_attribute( new Location() );
+		$this->register_new_attribute( new Details() );
+		$this->register_new_attribute( new Weekly() );
+		$this->register_new_attribute( new Users() );
+	}
+
+	/**
+	 * Method to add a new attribute dynamically.
+	 *
+	 * @param Custom_Post_Attribute $attribute the attribute to add.
+	 */
+	public function register_new_attribute( Custom_Post_Attribute $attribute ) {
+
+		$this->attributes_array[] = $attribute;
 	}
 
 	/**

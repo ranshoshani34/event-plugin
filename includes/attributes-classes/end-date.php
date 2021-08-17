@@ -2,13 +2,13 @@
 /**
  * Class file for end date attribute.
  *
- * @package event-plugin.php
+ * @package event-plugin
  */
 
 /**
  * Class End_Date.
  */
-class End_Date extends Event_Attribute {
+class End_Date extends Custom_Post_Attribute {
 
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
@@ -46,13 +46,9 @@ class End_Date extends Event_Attribute {
 	 * @param int $post_id - the post id.
 	 */
 	public function update_value( int $post_id ) : void {
-		$is_nonce_valid = isset( $_POST['rep-event-info-nonce'] ) && ( wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( ROOT ) ) );
-		if ( ! $is_nonce_valid ) {
-			return;
-		}
 
-		if ( isset( $_POST['rep-event-end-date'] ) ) {
-			update_post_meta( $post_id, 'event-end-date', strtotime( sanitize_text_field( wp_unslash( $_POST['rep-event-end-date'] ) ) ) );
+		if ( isset( $_POST['rep-event-end-date'] ) ) { //phpcs:ignore
+			update_post_meta( $post_id, 'event-end-date', strtotime( sanitize_text_field( wp_unslash( $_POST['rep-event-end-date'] ) ) ) );//phpcs:ignore
 		}
 	}
 
@@ -69,5 +65,14 @@ class End_Date extends Event_Attribute {
 			<h3>End date: <?php echo esc_html( gmdate( 'd/m/y', (int) $end_date ) ); ?></h3>
 			<?php
 		}
+	}
+
+	/**
+	 * Method that does any action that should happen after a post is saved.
+	 *
+	 * @param int $post_id id of the post.
+	 */
+	public function after_save_post( int $post_id ) {
+		$this->update_value( $post_id );
 	}
 }
