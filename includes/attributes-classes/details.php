@@ -21,11 +21,11 @@ class Details extends Custom_Post_Attribute {
 		}
 
 		$event_details = ! empty ($event_details) ? $event_details : '';
-
+		$tag_id = 'rep-event-details';
 		?>
-		<label for="rep-event-details"><?php esc_html_e( 'Event Details:', 'rep' ); ?>
+		<label for="<?php echo $tag_id; ?>"><?php esc_html_e( 'Event Details:', 'rep' ); ?>
 		</label>
-		<textarea class="widefat" id="rep-event-details" name="rep-event-details"><?php echo esc_html( $event_details ); ?></textarea>
+		<textarea class="widefat" id="<?php echo $tag_id; ?>" name="<?php echo $tag_id; ?>"><?php echo esc_html( $event_details ); ?></textarea>
 		<?php
 	}
 
@@ -61,7 +61,7 @@ class Details extends Custom_Post_Attribute {
 		$event_details = $this->get_value( $post_id );
 		?>
 		<h3>Details:</h3>
-		<p>         <?php echo esc_html( $event_details ); ?> </p>
+		<p><?php echo esc_html( $event_details ); ?> </p>
 		<?php
 	}
 
