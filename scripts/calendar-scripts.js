@@ -1,13 +1,14 @@
 
 jQuery(document).ready( function() {
 
-	// This action will perform when next/previous month is clicked.
-	jQuery(".rep-calendar-button").on('click', function(e) {
+	// This action will perform when the month is changed by user (calendar view).
+	jQuery(".rep_month_picker").on('submit', function(e) {
 		e.preventDefault();
 
-		let newMonth = jQuery(this).attr("month")
-		let newYear = jQuery(this).attr("year")
+		let form = e.target;
+		let formData = new FormData(form);
 
+		formData.append('action','change_month');
 
 		jQuery.ajax({
 			type : "POST",
@@ -15,13 +16,13 @@ jQuery(document).ready( function() {
 			url : myAjax.ajaxurl,
 			contentType: false,
 			processData: false,
-			data : {action: 'change_month', month: newMonth, year: newYear},
+			data : formData,
 			success: function(response) {
 				if(response.type == "success") {
 					jQuery("#rep_calendar").html(response.calendar);
 				}
 				else {
-					alert("There was a problem loading the new month")
+					alert("Your event could not be added")
 				}
 			}
 		})

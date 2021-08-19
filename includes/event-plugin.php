@@ -226,6 +226,7 @@ final class Event_Plugin {
 		add_action( 'elementor/widgets/widgets_registered', array( $this, 'init_widgets' ) );
 		add_action( 'elementor/controls/controls_registered', array( $this, 'init_controls' ) );
 		$this->add_ajax_actions_elementor();
+		$this->add_ajax_actions();
 
 	}
 
@@ -238,6 +239,18 @@ final class Event_Plugin {
 		add_action("wp_ajax_process_form", "Form_Processor::process_form");
 		add_action("wp_ajax_nopriv_process_form", "Form_Processor::process_form");
 	}
+
+	/**
+	 * Adds necessary actions for ajax operation.
+	 */
+	public function add_ajax_actions(){
+		require_once WP_PLUGIN_DIR . '/event-plugin/includes/calendar-creator.php';
+
+		add_action("wp_ajax_change_month", "Calendar_Creator::respond_with_calendar");
+		add_action("wp_ajax_nopriv_change_month", "Calendar_Creator::respond_with_calendar");
+	}
+
+
 
 	/**
 	 * Init Widgets
@@ -374,8 +387,19 @@ final class Event_Plugin {
 		);
 		wp_localize_script( 'event_scripts', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
 
+		wp_register_script(
+			'calendar_scripts',
+			self::SCRIPTS . 'calendar-scripts.js',
+			array( 'jquery' ),
+			self::VERSION,
+			false
+		);
+		wp_localize_script( 'calendar_scripts', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+
+
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'event_scripts' );
+		wp_enqueue_script( 'calendar_scripts' );
 
 	}
 

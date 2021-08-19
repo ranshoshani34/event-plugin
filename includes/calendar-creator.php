@@ -108,12 +108,13 @@ class Calendar_Creator {
 	 * @return string
 	 */
 	public static function generate_calendar_html() : string {
-		return '<div id="rep_calendar">' . self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) ) . '</div>';
+		return self::generate_month_picker() . '<br><br><div id="rep_calendar">' . self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) ) . '</div>';
 	}
 
 	public static function respond_with_calendar() {
-		$new_month = (int) $_REQUEST['month'];
-		$new_year = (int) $_REQUEST['year'];
+		$new_date = explode('-', $_POST['rep_month']);
+		$new_month = (int) $new_date[1];
+		$new_year = (int) $new_date[0];
 
 		$result['type'] = 'success';
 		$result['calendar'] = self::draw_calendar($new_month, $new_year);
@@ -136,6 +137,13 @@ class Calendar_Creator {
 	 */
 	public static function generate_calendar_header_html() : string {
 		return '<h2>' . gmdate( 'F' ) . ' ' . gmdate( 'Y' ) . '</>';
+	}
+
+	private static function generate_month_picker() : string{
+		$month = gmdate('m');
+		$year = gmdate('Y');
+		$current_time = $year . '-' . $month;
+		return '<form class="rep_month_picker"><input type="month" id="rep_month" name="rep_month" value="'. $current_time . '"><input type="submit" value="Change month"></form>';
 	}
 
 }
