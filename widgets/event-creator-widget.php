@@ -43,9 +43,36 @@ class Event_Creator_Widget extends Elementor\Widget_Base {
 	protected function render() {
 		require_once WP_PLUGIN_DIR . '/event-plugin/includes/event-type-creator.php';
 
+
+
+		$processing_path = WP_PLUGIN_DIR . '/event-plugin/widgets/process-form.php';
+
+		// generate a nonce field.
+		$nonce = wp_create_nonce("rep_event_nonce");
+
+
 		$event_type_creator = Event_Type_Creator::instance();
+		?>
+			<form action="" method="post" class="js_create_event_form" nonce="<?php echo $nonce?>">
+				<label
+						for="rep-title"><?php esc_html_e( 'Event Title:', 'rep' ); ?>
+				</label>
+				<input
+						class="widefat"
+						id="rep-title"
+						type="text"
+						name="rep-title"
+						placeholder="eg. Times Square"
+				/><br><br>
+		<?php
 
 		$event_type_creator->echo_form_html(); //phpcs:ignore
+		?>
+			<br>
+			<input type="submit" value="Submit">
+			</form>
+		<h3 id="rep_success_header"></h3>
+		<?php
 	}
 
 }

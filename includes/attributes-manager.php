@@ -4,13 +4,13 @@
  *
  * @package event-plugin.
  */
-require 'attributes-classes/custom-post-attribute.php';
-require 'attributes-classes/start-date.php';
-require 'attributes-classes/end-date.php';
-require 'attributes-classes/location.php';
-require 'attributes-classes/details.php';
-require 'attributes-classes/weekly.php';
-require 'attributes-classes/users.php';
+require_once 'attributes-classes/custom-post-attribute.php';
+require_once 'attributes-classes/start-date.php';
+require_once 'attributes-classes/end-date.php';
+require_once 'attributes-classes/location.php';
+require_once 'attributes-classes/details.php';
+require_once 'attributes-classes/weekly.php';
+require_once 'attributes-classes/users.php';
 
 /**
  * Class Attributes_Manager to manage the different event attributes.

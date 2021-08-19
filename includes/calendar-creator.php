@@ -5,7 +5,7 @@
  * @package event-plugin.
  */
 
-require 'event-data.php';
+require_once 'event-data.php';
 
 /**
  * Class Calendar_Creator for drawing the calendar with html.
@@ -108,8 +108,26 @@ class Calendar_Creator {
 	 * @return string
 	 */
 	public static function generate_calendar_html() : string {
-		return self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) );
+		return '<div id="rep_calendar">' . self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) ) . '</div>';
 	}
+
+	public static function respond_with_calendar() {
+		$new_month = (int) $_REQUEST['month'];
+		$new_year = (int) $_REQUEST['year'];
+
+		$result['type'] = 'success';
+		$result['calendar'] = self::draw_calendar($new_month, $new_year);
+
+		if ( ! empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' ) {
+			$result = json_encode( $result );
+			echo $result;
+		} else {
+			header( 'Location: ' . $_SERVER['HTTP_REFERER'] );
+		}
+
+		die();
+	}
+
 
 	/**
 	 * Method to render a header with month and year information.

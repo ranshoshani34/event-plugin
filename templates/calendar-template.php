@@ -7,7 +7,7 @@
  * @package event-plugin.
  */
 
-require WP_PLUGIN_DIR . '/event-plugin/includes/calendar-creator.php';
+require_once WP_PLUGIN_DIR . '/event-plugin/includes/calendar-creator.php';
 
 get_header();
 

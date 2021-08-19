@@ -4,7 +4,7 @@
  *
  * @package event-plugin.
  */
-require 'attributes-manager.php';
+require_once 'attributes-manager.php';
 
 /**
  * Class Event_Type_Creator for creating the events custom post type.
@@ -52,7 +52,7 @@ class Event_Type_Creator {
 	public function initialize() {
 		add_action( 'init', array( $this, 'register' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
-		add_action( 'save_post', array( $this, 'after_save_post' ) );
+		add_action( 'save_post', array( $this, 'after_submit' ) );
 	}
 
 	/**
@@ -122,15 +122,11 @@ class Event_Type_Creator {
 	 *
 	 * @param int $post_id - the post id.
 	 */
-	public function after_save_post( int $post_id = 0 ) {
+	public function after_submit( int $post_id ) {
 
-		if ( 0 !== $post_id ) {
-			// checking if the post being saved is an 'event',
-			// if not, then return.
-			if ( isset( $_POST['post_type'] ) ) {
-				if ( 'event' !== $_POST['post_type'] ) {
-					return;
-				}
+		if ( isset( $_POST['post_type'] ) ) {
+			if ( 'event' !== $_POST['post_type'] ) {
+				return;
 			}
 
 			// checking for the 'save' status.
@@ -150,28 +146,11 @@ class Event_Type_Creator {
 		}
 
 	}
-	// todo ajax.
-	public function create_event_instance() {
-		// insert the post and set the category.
-		$post_id = wp_insert_post(
-			array(
-				'post_type'      => 'event',
-				'post_title'     => 'TEST',
-				'post_content'   => '',
-				'post_status'    => 'publish',
-				'comment_status' => 'closed',   // if you prefer.
-				'ping_status'    => 'closed',      // if you prefer.
-			)
-		);
 
-		if ( $post_id ) {
-			// todo.
-		}
-	}
-
+	/**
+	 * Method to echo and html form for event creation.
+	 */
 	public function echo_form_html() {
-		// generate a nonce field.
-		wp_nonce_field( basename( EVENT_PLUGIN_ROOT ), 'rep-event-info-nonce' );
 
 		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
 			$attribute->render_metabox();

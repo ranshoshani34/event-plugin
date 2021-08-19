@@ -17,7 +17,7 @@ abstract class Custom_Post_Attribute {
 	 *
 	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
-	abstract public function render_metabox( int $post_id = 0 );
+	abstract public function render_metabox( int $post_id);
 
 	/**
 	 * Description - method to get the attribute value from the database.

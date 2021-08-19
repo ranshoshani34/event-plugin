@@ -64,6 +64,13 @@ final class Event_Plugin {
 	const STYLES = EVENT_PLUGIN_ROOT . '/css/';
 
 	/**
+	 * Scripts path const.
+	 *
+	 * @var string Scripts path.
+	 */
+	const SCRIPTS = EVENT_PLUGIN_ROOT . '/scripts/';
+
+	/**
 	 * Instance
 	 * Ensures only one instance of the class is loaded or can be loaded.
 	 *
@@ -192,15 +199,9 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function init() {
-		flush_rewrite_rules();
 		$this->i18n();
-		// todo do more functions.
-		wp_enqueue_style( 'style.css', self::STYLES . 'style.css', array(), '1' );
-
-		$event_type_creator = Event_Type_Creator::instance();
-		$event_type_creator->initialize();
-
-		Template_Manager::initialize();
+		$this->add_styles_and_scripts();
+		$this->initialize_utility_classes();
 	}
 
 	/**
@@ -212,6 +213,7 @@ final class Event_Plugin {
 	 */
 	public function elementor_init() {
 		add_action( 'elementor/init', array( $this, 'add_actions_elementor' ) );
+
 	}
 
 	/**
@@ -223,6 +225,18 @@ final class Event_Plugin {
 	public function add_actions_elementor() {
 		add_action( 'elementor/widgets/widgets_registered', array( $this, 'init_widgets' ) );
 		add_action( 'elementor/controls/controls_registered', array( $this, 'init_controls' ) );
+		$this->add_ajax_actions_elementor();
+
+	}
+
+	/**
+	 * Adds necessary actions for ajax operation regarding elementor widgets.
+	 */
+	public function add_ajax_actions_elementor(){
+		require_once WP_PLUGIN_DIR . '/event-plugin/includes/process-form.php';
+
+		add_action("wp_ajax_process_form", "Form_Processor::process_form");
+		add_action("wp_ajax_nopriv_process_form", "Form_Processor::process_form");
 	}
 
 	/**
@@ -332,6 +346,36 @@ final class Event_Plugin {
 		);
 
 		printf( '<div class="notice notice-warning is-dismissible"><p>%1$s</p></div>', $message ); //phpcs:ignore
+
+	}
+
+	/**
+	 * Method to initialize all the utility class.
+	 */
+	private function initialize_utility_classes() {
+		$event_type_creator = Event_Type_Creator::instance();
+		$event_type_creator->initialize();
+
+		Template_Manager::initialize();
+	}
+
+	/**
+	 * Method to add styles and scripts.
+	 */
+	private function add_styles_and_scripts() {
+		wp_enqueue_style( 'style.css', self::STYLES . 'style.css', array(), self::VERSION );
+
+		wp_register_script(
+			'event_scripts',
+			self::SCRIPTS . 'event-scripts.js',
+			array( 'jquery' ),
+			self::VERSION,
+			false
+		);
+		wp_localize_script( 'event_scripts', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+
+		wp_enqueue_script( 'jquery' );
+		wp_enqueue_script( 'event_scripts' );
 
 	}
 

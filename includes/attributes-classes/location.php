@@ -55,7 +55,7 @@ class Location extends Custom_Post_Attribute {
 	 */
 	public function update_value( int $post_id ) : void {
 
-		if ( isset( $_POST['rep-event-venue'] ) ) {
+		if ( isset( $_POST['rep-event-venue'] ) ) { //phpcs:ignore
 			update_post_meta( $post_id, 'event-venue', sanitize_text_field( wp_unslash( $_POST['rep-event-venue'] ) ) );//phpcs:ignore
 		}
 	}

@@ -155,6 +155,14 @@ class Users extends Custom_Post_Attribute {
 		return get_post_meta( $post_id, $user_id, true );
 	}
 
+	/**
+	 * Method to determine if the user was already mailed about the event.
+	 *
+	 * @param string $user_id the user's id.
+	 * @param int    $post_id the post id.
+	 *
+	 * @return bool
+	 */
 	private function is_user_mailed( string $user_id, int $post_id ): bool {
 		return get_post_meta( $post_id, $user_id . '-mailed', true );
 	}
