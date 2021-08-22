@@ -148,6 +148,19 @@ class Event_Type_Creator {
 	}
 
 	/**
+	 * Method that saves the attributes data after a re.
+	 *
+	 * @param int $post_id - the post id.
+	 */
+	public function after_elementor_form_submit(int $post_id) {
+
+		// loop through the attributes and update internally the database values.
+		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
+			$attribute->after_elementor_form_submit( $post_id );
+		}
+	}
+
+	/**
 	 * Method to echo and html form for event creation.
 	 */
 	public function echo_form_html() {

@@ -25,7 +25,7 @@ class Event_Creator_Widget extends Elementor\Widget_Base {
 	 * @return string
 	 */
 	public function get_title() : string {
-		return 'Event Form';
+		return __( 'Event Form', 'rep' );
 	}
 
 	/**
@@ -42,8 +42,6 @@ class Event_Creator_Widget extends Elementor\Widget_Base {
 	 */
 	protected function render() {
 		require_once WP_PLUGIN_DIR . '/event-plugin/includes/event-type-creator.php';
-
-		$processing_path = WP_PLUGIN_DIR . '/event-plugin/widgets/process-form.php';
 
 		// generate a nonce field.
 		$nonce = wp_create_nonce( 'rep_event_nonce' );

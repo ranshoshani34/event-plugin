@@ -9,6 +9,8 @@
  * Class Start_Date.
  */
 class Start_Date extends Custom_Post_Attribute {
+	private $tag_id = 'rep-event-start-date';
+
 
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
@@ -21,16 +23,15 @@ class Start_Date extends Custom_Post_Attribute {
 			$event_start_date = $this->get_value( $post_id );
 		}
 		$event_start_date = ! empty( $event_start_date ) ? $event_start_date : time();
-		$tag_id           = 'rep-event-start-date';
 		?>
-		<label for="<?php echo $tag_id; //phpcs:ignore ?>">
+		<label for="<?php echo $this->tag_id; //phpcs:ignore ?>">
 			<?php esc_html_e( 'Event Start Date:', 'rep' ); ?>
 		</label>
 		<input
 			class="widefat"
-			id="<?php echo $tag_id; //phpcs:ignore?>"
+			id="<?php echo $this->tag_id; //phpcs:ignore?>"
 			type="date"
-			name="<?php echo $tag_id; //phpcs:ignore?>"
+			name="<?php echo $this->tag_id; //phpcs:ignore?>"
 			value="<?php echo esc_html( gmdate( 'Y-m-d', $event_start_date ) ); ?>"
 		>
 		<?php
@@ -48,21 +49,13 @@ class Start_Date extends Custom_Post_Attribute {
 	}
 
 	/**
-	 * Description - method to update the database from the submitted form.
+	 * Method to update the database with the given values.
 	 *
-	 * @param int $post_id - the post id.
+	 * @param int $post_id the post id.
+	 * @param array $values array of values to add to the database.
 	 */
-	public function update_value( int $post_id ) : void {
-
-		if ( isset( $_POST['rep-event-start-date'] ) ) { //phpcs:ignore
-			update_post_meta(
-				$post_id,
-				'event-start-date',
-				strtotime(
-					sanitize_text_field( wp_unslash( $_POST['rep-event-start-date'] ) ) //phpcs:ignore
-				)
-			);
-		}
+	public function update_value( int $post_id , array $values) : void {
+		update_post_meta( $post_id, 'event-start-date', strtotime( $values[0] )); //phpcs:ignore
 	}
 
 	/**
@@ -83,6 +76,20 @@ class Start_Date extends Custom_Post_Attribute {
 	 * @param int $post_id id of the post.
 	 */
 	public function after_save_post( int $post_id ) {
-		$this->update_value( $post_id );
+		if ( isset( $_POST[$this->tag_id] ) ) { //phpcs:ignore
+			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($_POST[$this->tag_id]))] );
+		}
+	}
+
+	/**
+	 * Method to process Form API information for this attribute
+	 *
+	 * @param int $post_id the post id.
+	 * @param array $fields array of record fields to process form information from.
+	 */
+	public function after_elementor_form_submit( int $post_id , array $fields) {
+		$values = [$fields['start-date']];
+
+		$this->update_value( $post_id, $values);
 	}
 }

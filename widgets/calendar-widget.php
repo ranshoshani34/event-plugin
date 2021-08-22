@@ -27,7 +27,7 @@ class Calendar_Widget extends Elementor\Widget_Base {
 	 * @return string
 	 */
 	public function get_title() : string {
-		return 'Calendar';
+		return __( 'Calendar', 'rep' );
 	}
 
 	/**

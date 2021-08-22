@@ -33,7 +33,7 @@ abstract class Custom_Post_Attribute {
 	 *
 	 * @param int $post_id - the post id.
 	 */
-	abstract public function update_value( int $post_id );
+	abstract public function update_value( int $post_id , array $values);
 
 	/**
 	 * Description - method to render the field about the attribute in the event page (single).
@@ -48,6 +48,8 @@ abstract class Custom_Post_Attribute {
 	 * @param int $post_id id of the post.
 	 */
 	abstract public function after_save_post( int $post_id);
+
+	abstract public function after_elementor_form_submit(int $post_id, array $fields);
 
 
 }

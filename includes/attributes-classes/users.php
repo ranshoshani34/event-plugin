@@ -72,15 +72,15 @@ class Users extends Custom_Post_Attribute {
 	}
 
 	/**
-	 * Description - method to update the database from the submitted form.
+	 * Method to update the database with the given values.
 	 *
-	 * @param int $post_id - the post id.
+	 * @param int $post_id the post id.
+	 * @param array $values array of values to add to the database.
 	 */
-	public function update_value( int $post_id ) : void {
+	public function update_value( int $post_id , array $values) : void {
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
-
-			update_post_meta( $post_id, $user_id, isset( $_POST[ $user_id ] ) ); //phpcs:ignore
+			update_post_meta( $post_id, $user_id, $values[$user_id] ); //phpcs:ignore
 		}
 	}
 
@@ -91,8 +91,34 @@ class Users extends Custom_Post_Attribute {
 	 */
 	public function after_save_post( int $post_id ) {
 
-		$this->update_value( $post_id );
+		$user_assignment_values = [];
+		foreach ( $this->users_array as $user ) {
+			$user_id = $user->get( 'ID' );
+			$user_assignment_values[$user_id] = isset($_POST[$user_id]);
+		}
+		
+		$this->update_value( $post_id , $user_assignment_values);
+		$this->send_mail_to_users( $post_id);
+	}
 
+	/**
+	 * Method to process Form API information for this attribute
+	 *
+	 * @param int $post_id the post id.
+	 * @param array $fields array of record fields to process form information from.
+	 */
+	public function after_elementor_form_submit(int $post_id, array $fields){
+		$values = [];
+		foreach ( $this->users_array as $user ) {
+			$user_id = $user->get( 'ID' );
+			$values[$user_id] = $fields[$user_id];
+		}
+
+		$this->update_value( $post_id , $values);
+		$this->send_mail_to_users( $post_id);
+	}
+
+	private function send_mail_to_users(int $post_id){
 		$emails = [];
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
