@@ -21,16 +21,16 @@ class Location extends Custom_Post_Attribute {
 		}
 
 		$event_venue = ! empty( $event_venue ) ? $event_venue : '';
-		$tag_id = 'rep-event-venue';
+		$tag_id      = 'rep-event-venue';
 		?>
 		<label
-			for="<?php echo $tag_id; ?>"><?php esc_html_e( 'Event Location:', 'rep' ); ?>
+			for="<?php echo $tag_id; //phpcs:ignore?>"><?php esc_html_e( 'Event Location:', 'rep' ); ?>
 		</label>
 		<input
 			class="widefat"
-			id="<?php echo $tag_id; ?>"
+			id="<?php echo $tag_id; //phpcs:ignore?>"
 			type="text"
-			name="<?php echo $tag_id; ?>"
+			name="<?php echo $tag_id; //phpcs:ignore?>"
 			placeholder="eg. Times Square"
 			value="<?php echo esc_html( $event_venue ); ?>"
 		/>

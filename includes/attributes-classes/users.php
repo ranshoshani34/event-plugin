@@ -93,7 +93,7 @@ class Users extends Custom_Post_Attribute {
 
 		$this->update_value( $post_id );
 
-		$emails = array();
+		$emails = [];
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
 
@@ -125,7 +125,7 @@ class Users extends Custom_Post_Attribute {
 	 * @param string $message - message to send containing event details.
 	 */
 	private function mail_user( array $emails, string $message ) : void {
-		$headers = array( 'Content-Type: text/html' );
+		$headers = [ 'Content-Type: text/html' ];
 		wp_mail( $emails, 'New event published', $message, $headers );
 	}
 

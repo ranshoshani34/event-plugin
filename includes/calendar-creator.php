@@ -21,9 +21,9 @@ class Calendar_Creator {
 	 * @return string
 	 */
 	public static function draw_calendar( int $month, int $year ): string {
-		$events = array();
+		$events = [];
 
-		$query = new WP_Query( array( 'post_type' => 'event' ) );
+		$query = new WP_Query( [ 'post_type' => 'event' ] );
 
 		while ( $query->have_posts() ) {
 			$query->the_post();
@@ -34,7 +34,7 @@ class Calendar_Creator {
 
 		$calendar = '<table class="calendar">';
 
-		$headings  = array( 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' );
+		$headings  = [ 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday' ];
 		$calendar .= '<tr class="calendar-row"><td class="calendar-day-head">' . implode( '</td><td class="calendar-day-head">', $headings ) . '</td></tr>';
 
 		$running_day       = gmdate( 'w', mktime( 0, 0, 0, $month, 1, $year ) );
@@ -111,21 +111,28 @@ class Calendar_Creator {
 		return self::generate_month_picker() . '<br><br><div id="rep_calendar">' . self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) ) . '</div>';
 	}
 
+	/**
+	 * Method to respond to an ajax request with the requested calendar month.
+	 */
 	public static function respond_with_calendar() {
-		$new_date = explode('-', $_POST['rep_month']);
-		$new_month = (int) $new_date[1];
-		$new_year = (int) $new_date[0];
 
-		$result['type'] = 'success';
-		$result['calendar'] = self::draw_calendar($new_month, $new_year);
-
-		if ( ! empty( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && strtolower( $_SERVER['HTTP_X_REQUESTED_WITH'] ) == 'xmlhttprequest' ) {
-			$result = json_encode( $result );
-			echo $result;
-		} else {
-			header( 'Location: ' . $_SERVER['HTTP_REFERER'] );
+		if ( ! isset( $_POST['rep_month'] ) ) { //phpcs:ignore
+			return;
 		}
 
+		$new_date  = explode( '-', sanitize_text_field( wp_unslash( $_POST['rep_month'] ) ) ); //phpcs:ignore
+		$new_month = (int) $new_date[1];
+		$new_year  = (int) $new_date[0];
+
+		$result['type']     = 'success';
+		$result['calendar'] = self::draw_calendar( $new_month, $new_year );
+
+		if ( ! empty( sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REQUESTED_WITH'] ) ) ) && strtolower( sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_REQUESTED_WITH'] ) ) ) === 'xmlhttprequest' ) {
+			$result = wp_json_encode( $result );
+			echo $result; //phpcs:ignore
+		} elseif ( isset( $_SERVER['HTTP_REFERER'] ) ) {
+			header( 'Location: ' . sanitize_text_field( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) );
+		}
 		die();
 	}
 
@@ -139,11 +146,16 @@ class Calendar_Creator {
 		return '<h2>' . gmdate( 'F' ) . ' ' . gmdate( 'Y' ) . '</>';
 	}
 
-	private static function generate_month_picker() : string{
-		$month = gmdate('m');
-		$year = gmdate('Y');
+	/**
+	 * Method to return the html string for the month picker that changes the month in the calendar dynamically.
+	 *
+	 * @return string the html for the month picker.
+	 */
+	private static function generate_month_picker() : string {
+		$month        = gmdate( 'm' );
+		$year         = gmdate( 'Y' );
 		$current_time = $year . '-' . $month;
-		return '<form class="rep_month_picker"><input type="month" id="rep_month" name="rep_month" value="'. $current_time . '"><input type="submit" value="Change month"></form>';
+		return '<form class="rep_month_picker"><input type="month" id="rep_month" name="rep_month" value="' . $current_time . '"><input type="submit" value="Change month"></form>';
 	}
 
 }

@@ -50,16 +50,16 @@ class Event_Type_Creator {
 	 * Method to add all the actions necessary for creating the post type.
 	 */
 	public function initialize() {
-		add_action( 'init', array( $this, 'register' ) );
-		add_action( 'add_meta_boxes', array( $this, 'add_metabox' ) );
-		add_action( 'save_post', array( $this, 'after_submit' ) );
+		add_action( 'init', [ $this, 'register' ] );
+		add_action( 'add_meta_boxes', [ $this, 'add_metabox' ] );
+		add_action( 'save_post', [ $this, 'after_submit' ] );
 	}
 
 	/**
 	 * Method that registers the custom post type.
 	 */
 	public function register() {
-		$labels = array(
+		$labels = [
 			'name'               => __( 'Events', 'rep' ),
 			'singular_name'      => __( 'Event', 'rep' ),
 			'add_new_item'       => __( 'Add New Event', 'rep' ),
@@ -69,14 +69,14 @@ class Event_Type_Creator {
 			'view_item'          => __( 'View Event', 'rep' ),
 			'not_found'          => __( 'No Events Found', 'rep' ),
 			'not_found_in_trash' => __( 'No Events Found in Trash', 'rep' ),
-		);
+		];
 
-		$supports = array(
+		$supports = [
 			'title',
 			'thumbnail',
-		);
+		];
 
-		$args = array(
+		$args = [
 			'label'        => __( 'Events', 'rep' ),
 			'labels'       => $labels,
 			'description'  => __( 'A list of upcoming events', 'rep' ),
@@ -86,7 +86,7 @@ class Event_Type_Creator {
 			'has_archive'  => false,
 			'rewrite'      => true,
 			'supports'     => $supports,
-		);
+		];
 
 		register_post_type( 'event', $args );
 	}
@@ -98,7 +98,7 @@ class Event_Type_Creator {
 		add_meta_box(
 			'rep-event-info-metabox',
 			__( 'Event Info', 'rep' ),
-			array( $this, 'render_metabox' ),
+			[ $this, 'render_metabox' ],
 			'event',
 			'normal',
 			'core'

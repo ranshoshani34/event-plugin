@@ -61,14 +61,14 @@ final class Event_Plugin {
 	 *
 	 * @var string Styles path.
 	 */
-	const STYLES = EVENT_PLUGIN_ROOT . '/css/';
+	const STYLES = EVENT_PLUGIN_ROOT . '/assets/css/';
 
 	/**
 	 * Scripts path const.
 	 *
 	 * @var string Scripts path.
 	 */
-	const SCRIPTS = EVENT_PLUGIN_ROOT . '/scripts/';
+	const SCRIPTS = EVENT_PLUGIN_ROOT . '/assets/scripts/';
 
 	/**
 	 * Instance
@@ -95,8 +95,8 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function __construct() {
-		register_activation_hook( basename( EVENT_PLUGIN_ROOT ), array( $this, 'activate' ) );
-		add_action( 'plugins_loaded', array( $this, 'on_plugins_loaded' ) );
+		register_activation_hook( basename( EVENT_PLUGIN_ROOT ), [ $this, 'activate' ] );
+		add_action( 'plugins_loaded', [ $this, 'on_plugins_loaded' ] );
 	}
 
 	/**
@@ -157,7 +157,7 @@ final class Event_Plugin {
 
 		// Check for required PHP version.
 		if ( version_compare( PHP_VERSION, self::MINIMUM_PHP_VERSION, '<' ) ) {
-			add_action( 'admin_notices', array( $this, 'admin_notice_minimum_php_version' ) );
+			add_action( 'admin_notices', [ $this, 'admin_notice_minimum_php_version' ] );
 
 			return false;
 		}
@@ -178,12 +178,12 @@ final class Event_Plugin {
 
 		// Check if Elementor installed and activated.
 		if ( ! did_action( 'elementor/loaded' ) ) {
-			add_action( 'admin_notices', array( $this, 'admin_notice_missing_main_plugin' ) );
+			add_action( 'admin_notices', [ $this, 'admin_notice_missing_main_plugin' ] );
 
 			return false;
 		}
 		if ( ! version_compare( ELEMENTOR_VERSION, self::MINIMUM_ELEMENTOR_VERSION, '>=' ) ) {
-			add_action( 'admin_notices', array( $this, 'admin_notice_minimum_elementor_version' ) );
+			add_action( 'admin_notices', [ $this, 'admin_notice_minimum_elementor_version' ] );
 
 			return false;
 		}
@@ -212,7 +212,7 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function elementor_init() {
-		add_action( 'elementor/init', array( $this, 'add_actions_elementor' ) );
+		add_action( 'elementor/init', [ $this, 'add_actions_elementor' ] );
 
 	}
 
@@ -223,8 +223,8 @@ final class Event_Plugin {
 	 * @access public
 	 */
 	public function add_actions_elementor() {
-		add_action( 'elementor/widgets/widgets_registered', array( $this, 'init_widgets' ) );
-		add_action( 'elementor/controls/controls_registered', array( $this, 'init_controls' ) );
+		add_action( 'elementor/widgets/widgets_registered', [ $this, 'init_widgets' ] );
+		add_action( 'elementor/controls/controls_registered', [ $this, 'init_controls' ] );
 		$this->add_ajax_actions_elementor();
 		$this->add_ajax_actions();
 
@@ -233,21 +233,21 @@ final class Event_Plugin {
 	/**
 	 * Adds necessary actions for ajax operation regarding elementor widgets.
 	 */
-	public function add_ajax_actions_elementor(){
+	public function add_ajax_actions_elementor() {
 		require_once WP_PLUGIN_DIR . '/event-plugin/includes/process-form.php';
 
-		add_action("wp_ajax_process_form", "Form_Processor::process_form");
-		add_action("wp_ajax_nopriv_process_form", "Form_Processor::process_form");
+		add_action( 'wp_ajax_process_form', 'Form_Processor::process_form' );
+		add_action( 'wp_ajax_nopriv_process_form', 'Form_Processor::process_form' );
 	}
 
 	/**
 	 * Adds necessary actions for ajax operation.
 	 */
-	public function add_ajax_actions(){
+	public function add_ajax_actions() {
 		require_once WP_PLUGIN_DIR . '/event-plugin/includes/calendar-creator.php';
 
-		add_action("wp_ajax_change_month", "Calendar_Creator::respond_with_calendar");
-		add_action("wp_ajax_nopriv_change_month", "Calendar_Creator::respond_with_calendar");
+		add_action( 'wp_ajax_change_month', 'Calendar_Creator::respond_with_calendar' );
+		add_action( 'wp_ajax_nopriv_change_month', 'Calendar_Creator::respond_with_calendar' );
 	}
 
 
@@ -376,26 +376,25 @@ final class Event_Plugin {
 	 * Method to add styles and scripts.
 	 */
 	private function add_styles_and_scripts() {
-		wp_enqueue_style( 'style.css', self::STYLES . 'style.css', array(), self::VERSION );
+		wp_enqueue_style( 'style.css', self::STYLES . 'style.css', [], self::VERSION );
 
 		wp_register_script(
 			'event_scripts',
 			self::SCRIPTS . 'event-scripts.js',
-			array( 'jquery' ),
+			[ 'jquery' ],
 			self::VERSION,
 			false
 		);
-		wp_localize_script( 'event_scripts', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
+		wp_localize_script( 'event_scripts', 'myAjax', [ 'ajaxurl' => admin_url( 'admin-ajax.php' ) ] );
 
 		wp_register_script(
 			'calendar_scripts',
 			self::SCRIPTS . 'calendar-scripts.js',
-			array( 'jquery' ),
+			[ 'jquery' ],
 			self::VERSION,
 			false
 		);
-		wp_localize_script( 'calendar_scripts', 'myAjax', array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ) );
-
+		wp_localize_script( 'calendar_scripts', 'myAjax', [ 'ajaxurl' => admin_url( 'admin-ajax.php' ) ] );
 
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'event_scripts' );

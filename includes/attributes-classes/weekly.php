@@ -21,7 +21,7 @@ class Weekly extends Custom_Post_Attribute {
 		}
 
 		$is_checked = ! empty( $is_checked ) && $is_checked;
-		$tag_id = 'rep-weekly';
+		$tag_id     = 'rep-weekly';
 		?>
 		<br>
 		<input type="checkbox" id="rep-weekly" name="rep-weekly"

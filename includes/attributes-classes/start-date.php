@@ -21,18 +21,18 @@ class Start_Date extends Custom_Post_Attribute {
 			$event_start_date = $this->get_value( $post_id );
 		}
 		$event_start_date = ! empty( $event_start_date ) ? $event_start_date : time();
-		$tag_id = 'rep-event-start-date';
+		$tag_id           = 'rep-event-start-date';
 		?>
-		<label for="<?php echo $tag_id; ?>">
+		<label for="<?php echo $tag_id; //phpcs:ignore ?>">
 			<?php esc_html_e( 'Event Start Date:', 'rep' ); ?>
 		</label>
 		<input
 			class="widefat"
-			id="<?php echo $tag_id; ?>"
+			id="<?php echo $tag_id; //phpcs:ignore?>"
 			type="date"
-			name="<?php echo $tag_id; ?>"
+			name="<?php echo $tag_id; //phpcs:ignore?>"
 			value="<?php echo esc_html( gmdate( 'Y-m-d', $event_start_date ) ); ?>"
-		/>
+		>
 		<?php
 	}
 

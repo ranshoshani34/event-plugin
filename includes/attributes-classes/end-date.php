@@ -21,12 +21,13 @@ class End_Date extends Custom_Post_Attribute {
 		}
 
 		$event_end_date = ! empty( $event_end_date ) ? $event_end_date : time();
-		$tag_id = 'rep-event-end-date';
+		$tag_id         = 'rep-event-end-date';
 		?>
-		<label for="<?php echo $tag_id; ?>"><?php esc_html_e( 'Event End Date:', 'rep' ); ?>
+		<label for="<?php echo $tag_id; //phpcs:ignore?>"><?php esc_html_e( 'Event End Date:', 'rep' ); ?>
 		</label>
-		<input class="widefat <?php echo $tag_id; ?>" id="<?php echo $tag_id; ?>" type="date" name="<?php echo $tag_id; ?>" placeholder="Format: February 18, 2014" value="<?php echo esc_html( gmdate( 'Y-m-d', $event_end_date ) ); ?>"/>
+		<input class="widefat <?php echo $tag_id; //phpcs:ignore?>" id="<?php echo $tag_id; ?>" type="date" name="<?php echo $tag_id; ?>" placeholder="Format: February 18, 2014" value="<?php echo esc_html( gmdate( 'Y-m-d', $event_end_date ) ); ?>">
 		<?php
+
 	}
 
 	/**

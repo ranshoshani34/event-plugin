@@ -4,6 +4,8 @@
  *
  * @package event-plugin.
  */
+
+
 require_once 'attributes-classes/custom-post-attribute.php';
 require_once 'attributes-classes/start-date.php';
 require_once 'attributes-classes/end-date.php';
@@ -22,7 +24,7 @@ class Attributes_Manager {
 	 *
 	 * @var array
 	 */
-	public $attributes_array = array();
+	public $attributes_array = [];
 
 	/**
 	 * Singleton instance.
