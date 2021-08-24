@@ -10,7 +10,6 @@
  */
 
 
-// todo add event status (archive).
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
