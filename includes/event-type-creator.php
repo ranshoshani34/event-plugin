@@ -5,6 +5,7 @@
  * @package event-plugin.
  */
 require_once 'attributes-manager.php';
+require_once 'custom_post_status.php';
 
 /**
  * Class Event_Type_Creator for creating the events custom post type.
@@ -53,6 +54,21 @@ class Event_Type_Creator {
 		add_action( 'init', [ $this, 'register' ] );
 		add_action( 'add_meta_boxes', [ $this, 'add_metabox' ] );
 		add_action( 'save_post', [ $this, 'save_data_from_dashboard' ] );
+
+		$archive = new Custom_Post_Status(
+			'archive',
+			'Archive',
+			'event',
+			array(
+				'label'                     => _x( 'Completed', 'post' ),
+				'label_count'               => _n_noop( 'Archived <span class="count">(%s)</span>', 'Archived <span class="count">(%s)</span>'),
+				'public'                    => false,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true
+			)
+		);
+		$archive->register();
 	}
 
 	/**

@@ -6,17 +6,35 @@ class Custom_Post_Status{
 	private $settings;
 	private $post_type;
 	private $title;
-		//todo change constructor
+
 	/**
 	 * @param $name
 	 * @param $settings
+	 * @param $post_type
+	 * @param $title
 	 */
-	public function __construct( $name, $settings ) {
+	public function __construct( $name, $title, $post_type, $settings ) {
 		$this->name = $name;
 		$this->settings = $settings;
+		$this->post_type = $post_type;
+		$this->title = $title;
 	}
 
-	///todo getters
+	/**
+	 * @return mixed
+	 */
+	public function get_name() {
+		return $this->name;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function get_title() {
+		return __($this->title, 'event-plugin');
+	}
+
+
 
 	public function register(){
 		$this->my_custom_status_creation();
@@ -71,7 +89,7 @@ class Custom_Post_Status{
 							});
 						</script>";
 
-				return array('Completed');
+				return array($this->get_title());
 		}
 		return $states;
 	}
