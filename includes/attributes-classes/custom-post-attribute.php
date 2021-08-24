@@ -5,6 +5,10 @@
  * @package event-plugin.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Class Custom_Post_Attribute.
  * Description - abstract class for a custom post attribute

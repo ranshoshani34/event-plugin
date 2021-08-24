@@ -1,5 +1,10 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+
 class User_Form_Field extends ElementorPro\Modules\Forms\Fields\Field_Base {
 	public function get_type() : string {
 		return 'users';

@@ -2,6 +2,11 @@
 /**
  * File to process event creation form.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 require_once WP_PLUGIN_DIR . '/event-plugin/includes/event-type-creator.php';
 
 /**

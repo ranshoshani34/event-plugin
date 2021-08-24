@@ -5,6 +5,9 @@
  * @package event-plugin.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
 
 require_once 'attributes-classes/custom-post-attribute.php';
 require_once 'attributes-classes/start-date.php';

@@ -5,6 +5,10 @@
  * @package event-plugin.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Class Detail
  */

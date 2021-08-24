@@ -5,6 +5,10 @@
  * @package event-plugin.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Main Event Plugin class
  * The main class that initiates and runs the plugin.

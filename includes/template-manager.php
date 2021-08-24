@@ -5,6 +5,10 @@
  * @package event-plugin.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 /**
  * Class Template_Manager to create and redirect templates and single.
  */

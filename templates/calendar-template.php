@@ -7,6 +7,10 @@
  * @package event-plugin.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 require_once WP_PLUGIN_DIR . '/event-plugin/includes/calendar-creator.php';
 
 get_header();

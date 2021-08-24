@@ -4,6 +4,11 @@
  *
  * @package event-plugin.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 require_once 'attributes-manager.php';
 require_once 'custom_post_status.php';
 
