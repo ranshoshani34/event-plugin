@@ -55,7 +55,6 @@ class Users extends Custom_Post_Attribute {
 			<br>
 			<?php
 			$is_checked = false;
-			echo $this->generate_single_user_html_elementor($user_id, $user->get('display_name'));
 
 		}
 	}
@@ -93,9 +92,11 @@ class Users extends Custom_Post_Attribute {
 	 * @param array $data array of attribute id => value.
 	 */
 	public function save_data( int $post_id, array $data ) {
-		$user_assignment_values = $this->parse_data($data['event_plugin_users']);
-		$this->update_value( $post_id , $user_assignment_values);
-		$this->send_mail_to_users( $post_id);
+		if (isset($data['event_plugin_users'])) {
+			$user_assignment_values = $this->parse_data( $data['event_plugin_users'] );
+			$this->update_value( $post_id, $user_assignment_values );
+			$this->send_mail_to_users( $post_id );
+		}
 	}
 
 	private function send_mail_to_users(int $post_id){
