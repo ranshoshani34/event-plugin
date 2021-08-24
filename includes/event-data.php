@@ -5,6 +5,11 @@
  * @package event-plugin.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
+
 /**
  * Class Event_Data, contains all the necessary data
  * and a method to generate a link to the event page in html.
