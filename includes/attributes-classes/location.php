@@ -9,7 +9,7 @@
  * Class Location.
  */
 class Location extends Custom_Post_Attribute {
-	private $tag_id = 'rep-event-venue';
+	private $id = 'event_plugin_location';
 
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
@@ -24,13 +24,13 @@ class Location extends Custom_Post_Attribute {
 		$event_venue = ! empty( $event_venue ) ? $event_venue : '';
 		?>
 		<label
-			for="<?php echo $this->tag_id; //phpcs:ignore?>"><?php esc_html_e( 'Event Location:', 'rep' ); ?>
+			for="<?php echo $this->id; //phpcs:ignore?>"><?php esc_html_e( 'Event Location:', 'event-plugin' ); ?>
 		</label>
 		<input
 			class="widefat"
-			id="<?php echo $this->tag_id; //phpcs:ignore?>"
+			id="<?php echo $this->id; //phpcs:ignore?>"
 			type="text"
-			name="<?php echo $this->tag_id; //phpcs:ignore?>"
+			name="<?php echo $this->id; //phpcs:ignore?>"
 			placeholder="eg. Times Square"
 			value="<?php echo esc_html( $event_venue ); ?>"
 		/>
@@ -72,25 +72,14 @@ class Location extends Custom_Post_Attribute {
 	}
 
 	/**
-	 * Method that does any action that should happen after a post is saved.
-	 *
-	 * @param int $post_id id of the post.
-	 */
-	public function after_save_post( int $post_id ) {
-		if ( isset( $_POST[$this->tag_id] ) ) { //phpcs:ignore
-			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($_POST[$this->tag_id]))] );
-		}
-	}
-
-	/**
-	 * Method to process Form API information for this attribute
+	 * Method to save the data in the post meta.
 	 *
 	 * @param int $post_id the post id.
-	 * @param array $fields array of record fields to process form information from.
+	 * @param array $data array of attribute id => value.
 	 */
-	public function after_elementor_form_submit( int $post_id, array $fields) {
-		$values = [$fields['location']];
-
-		$this->update_value( $post_id, $values);
+	public function save_data( int $post_id, array $data ) {
+		if ( isset( $data[$this->id] ) ) {
+			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($data[$this->id]))] );
+		}
 	}
 }

@@ -22,7 +22,7 @@ class Event_Type_Creator {
 	 *
 	 * @var Event_Type_Creator
 	 */
-	private static $instance;
+	public static $instance;
 
 	/**
 	 * Constructor to initialize attributes manager.
@@ -52,7 +52,7 @@ class Event_Type_Creator {
 	public function initialize() {
 		add_action( 'init', [ $this, 'register' ] );
 		add_action( 'add_meta_boxes', [ $this, 'add_metabox' ] );
-		add_action( 'save_post', [ $this, 'after_submit' ] );
+		add_action( 'save_post', [ $this, 'save_data_from_dashboard' ] );
 	}
 
 	/**
@@ -60,15 +60,15 @@ class Event_Type_Creator {
 	 */
 	public function register() {
 		$labels = [
-			'name'               => __( 'Events', 'rep' ),
-			'singular_name'      => __( 'Event', 'rep' ),
-			'add_new_item'       => __( 'Add New Event', 'rep' ),
-			'all_items'          => __( 'All Events', 'rep' ),
-			'edit_item'          => __( 'Edit Event', 'rep' ),
-			'new_item'           => __( 'New Event', 'rep' ),
-			'view_item'          => __( 'View Event', 'rep' ),
-			'not_found'          => __( 'No Events Found', 'rep' ),
-			'not_found_in_trash' => __( 'No Events Found in Trash', 'rep' ),
+			'name'               => __( 'Events', 'event-plugin' ),
+			'singular_name'      => __( 'Event', 'event-plugin' ),
+			'add_new_item'       => __( 'Add New Event', 'event-plugin' ),
+			'all_items'          => __( 'All Events', 'event-plugin' ),
+			'edit_item'          => __( 'Edit Event', 'event-plugin' ),
+			'new_item'           => __( 'New Event', 'event-plugin' ),
+			'view_item'          => __( 'View Event', 'event-plugin' ),
+			'not_found'          => __( 'No Events Found', 'event-plugin' ),
+			'not_found_in_trash' => __( 'No Events Found in Trash', 'event-plugin' ),
 		];
 
 		$supports = [
@@ -77,12 +77,11 @@ class Event_Type_Creator {
 		];
 
 		$args = [
-			'label'        => __( 'Events', 'rep' ),
+			'label'        => __( 'Events', 'event-plugin' ),
 			'labels'       => $labels,
-			'description'  => __( 'A list of upcoming events', 'rep' ),
+			'description'  => __( 'A list of upcoming events', 'event-plugin' ),
 			'public'       => true,
 			'show_in_menu' => true,
-			'menu_icon'    => Event_Plugin::instance()::IMAGES . 'event.svg',
 			'has_archive'  => false,
 			'rewrite'      => true,
 			'supports'     => $supports,
@@ -96,8 +95,8 @@ class Event_Type_Creator {
 	 */
 	public function add_metabox() {
 		add_meta_box(
-			'rep-event-info-metabox',
-			__( 'Event Info', 'rep' ),
+			'event-plugin-info-metabox',
+			__( 'Event Info', 'event-plugin' ),
 			[ $this, 'render_metabox' ],
 			'event',
 			'normal',
@@ -110,53 +109,35 @@ class Event_Type_Creator {
 	 */
 	public function render_metabox() {
 		// generate a nonce field.
-		wp_nonce_field( basename( EVENT_PLUGIN_ROOT ), 'rep-event-info-nonce' );
+		wp_nonce_field( basename( EVENT_PLUGIN_ROOT ), 'event_plugin_nonce' );
 
 		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
 			$attribute->render_metabox( get_the_ID() );
 		}
 	}
 
-	/**
-	 * Method that saves the attributes data after the post is saved.
-	 *
-	 * @param int $post_id - the post id.
-	 */
-	public function after_submit( int $post_id ) {
-
+	public function save_data_from_dashboard(int $post_id){
 		if ( isset( $_POST['post_type'] ) ) {
 			if ( 'event' !== $_POST['post_type'] ) {
 				return;
 			}
-
 			// checking for the 'save' status.
 			$is_autosave    = wp_is_post_autosave( $post_id );
 			$is_revision    = wp_is_post_revision( $post_id );
-			$is_valid_nonce = isset( $_POST['rep-event-info-nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['rep-event-info-nonce'] ) ), basename( EVENT_PLUGIN_ROOT ) );
+			$is_valid_nonce = isset( $_POST['event_plugin_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['event_plugin_nonce'] ) ), basename( EVENT_PLUGIN_ROOT ) );
 
 			// exit depending on the save status or if the nonce is not valid.
 			if ( $is_autosave || $is_revision || ! $is_valid_nonce ) {
 				return;
 			}
-		}
 
-		// loop through the attributes and update internally the database values.
-		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
-			$attribute->after_save_post( $post_id );
+			$this->save_event_data($post_id, $_POST);
 		}
-
 	}
 
-	/**
-	 * Method that saves the attributes data after a re.
-	 *
-	 * @param int $post_id - the post id.
-	 */
-	public function after_elementor_form_submit(int $post_id) {
-
-		// loop through the attributes and update internally the database values.
+	public function save_event_data( int $post_id , array $data) {
 		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
-			$attribute->after_elementor_form_submit( $post_id );
+			$attribute->save_data( $post_id , $data);
 		}
 	}
 
@@ -169,6 +150,10 @@ class Event_Type_Creator {
 			$attribute->render_metabox();
 			echo '<br><br>';
 		}
+	}
+
+	public function register_new_attribute(Custom_Post_Attribute $attribute){
+		$this->attributes_manager->register_new_attribute($attribute);
 	}
 
 }

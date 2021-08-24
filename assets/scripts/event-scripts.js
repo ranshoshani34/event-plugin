@@ -21,7 +21,7 @@ jQuery(document).ready( function() {
 			data : formData,
 			success: function(response) {
 				if(response.type == "success") {
-					jQuery("#rep_success_header").html(`<a href="${response.permalink}">Event link : ${formData.get('rep-title')}</a> `);
+					jQuery("#event_plugin_success_header").html(`<a href="${response.permalink}">Event link : ${formData.get('event_plugin_title')}</a> `);
 				}
 				else {
 					alert("Your event could not be added")

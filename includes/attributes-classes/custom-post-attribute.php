@@ -42,14 +42,7 @@ abstract class Custom_Post_Attribute {
 	 */
 	abstract public function render_single_field( int $post_id ) : void;
 
-	/**
-	 * Method that does any action that should happen after a post is saved.
-	 *
-	 * @param int $post_id id of the post.
-	 */
-	abstract public function after_save_post( int $post_id);
-
-	abstract public function after_elementor_form_submit(int $post_id, array $fields);
+	abstract public function save_data( int $post_id, array $data);
 
 
 }

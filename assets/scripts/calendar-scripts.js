@@ -2,7 +2,7 @@
 jQuery(document).ready( function() {
 
 	// This action will perform when the month is changed by user (calendar view).
-	jQuery(".rep_month_picker").on('submit', function(e) {
+	jQuery(".event_plugin_month_picker").on('submit', function(e) {
 		e.preventDefault();
 		let form = e.target;
 		let formData = new FormData(form);
@@ -17,7 +17,7 @@ jQuery(document).ready( function() {
 			data : formData,
 			success: function(response) {
 				if(response.type == "success") {
-					jQuery("#rep_calendar").html(response.calendar);
+					jQuery("#event_plugin_calendar").html(response.calendar);
 				}
 				else {
 					alert("Your event could not be added")

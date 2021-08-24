@@ -9,7 +9,7 @@
  * Class Detail
  */
 class Details extends Custom_Post_Attribute {
-	private $tag_id = 'rep-event-details';
+	private $id = 'event_plugin_details';
 
 
 	/**
@@ -23,11 +23,10 @@ class Details extends Custom_Post_Attribute {
 		}
 
 		$event_details = ! empty ($event_details) ? $event_details : '';
-		$tag_id = 'rep-event-details';
 		?>
-		<label for="<?php echo $this->tag_id; ?>"><?php esc_html_e( 'Event Details:', 'rep' ); ?>
+		<label for="<?php echo $this->id; ?>"><?php esc_html_e( 'Event Details:', 'event-plugin' ); ?>
 		</label>
-		<textarea class="widefat" id="<?php echo $this->tag_id; ?>" name="<?php echo $this->tag_id; ?>"><?php echo esc_html( $event_details ); ?></textarea>
+		<textarea class="widefat" id="<?php echo $this->id; ?>" name="<?php echo $this->id ; ?>"><?php echo esc_html( $event_details ); ?></textarea>
 		<?php
 	}
 
@@ -66,25 +65,15 @@ class Details extends Custom_Post_Attribute {
 	}
 
 	/**
-	 * Method that does any action that should happen after a post is saved.
+	 * Method to save the data in the post meta.
 	 *
-	 * @param int $post_id id of the post.
+	 * @param int $post_id the post id.
+	 * @param array $data array of attribute id => value.
 	 */
-	public function after_save_post( int $post_id ) {
-		if ( isset( $_POST[$this->tag_id] ) ) {//phpcs:ignore
-			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($_POST[$this->tag_id]))] );
+	public function save_data( int $post_id, array $data ) {
+		if ( isset( $data[$this->id] ) ) {
+			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($data[$this->id]))] );
 		}
 	}
 
-	/**
-	 * Method to process Form API information for this attribute
-	 *
-	 * @param int $post_id the post id.
-	 * @param array $fields array of record fields to process form information from.
-	 */
-	public function after_elementor_form_submit( int $post_id, array $fields ) {
-		$values = [$fields['details']];
-
-		$this->update_value( $post_id, $values);
-	}
 }

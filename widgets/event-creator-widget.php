@@ -25,7 +25,7 @@ class Event_Creator_Widget extends Elementor\Widget_Base {
 	 * @return string
 	 */
 	public function get_title() : string {
-		return __( 'Event Form', 'rep' );
+		return __( 'Event Form', 'event-plugin' );
 	}
 
 	/**
@@ -44,20 +44,20 @@ class Event_Creator_Widget extends Elementor\Widget_Base {
 		require_once WP_PLUGIN_DIR . '/event-plugin/includes/event-type-creator.php';
 
 		// generate a nonce field.
-		$nonce = wp_create_nonce( 'rep_event_nonce' );
+		$nonce = wp_create_nonce( 'event_plugin_event_nonce' );
 
+		$title_id = 'event_plugin_title';
 		$event_type_creator = Event_Type_Creator::instance();
 		?>
 			<form action="" method="post" class="js_create_event_form" nonce="<?php echo $nonce; //phpcs:ignore?>">
 				<label
-						for="rep-title"><?php esc_html_e( 'Event Title:', 'rep' ); ?>
+						for="<?php echo $title_id; ?>"><?php esc_html_e( 'Event Title:', 'event-plugin' ); ?>
 				</label>
 				<input
 						class="widefat"
-						id="rep-title"
+						id="<?php echo $title_id; ?>"
 						type="text"
-						name="rep-title"
-						placeholder="eg. Times Square"
+						name="<?php echo $title_id; ?>"
 				/><br><br>
 		<?php
 
@@ -66,7 +66,7 @@ class Event_Creator_Widget extends Elementor\Widget_Base {
 			<br>
 			<input type="submit" value="Submit">
 			</form>
-		<h3 id="rep_success_header"></h3>
+		<h3 id="event_plugin_success_header"></h3>
 		<?php
 	}
 

@@ -9,7 +9,7 @@
  * Class Weekly.
  */
 class Weekly extends Custom_Post_Attribute {
-	private $tag_id = 'rep_weakly';
+	private $id = 'event_plugin_weakly';
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
 	 *
@@ -23,14 +23,14 @@ class Weekly extends Custom_Post_Attribute {
 		$is_checked = ! empty( $is_checked ) && $is_checked;
 		?>
 		<br>
-		<input type="checkbox" id="rep-weekly" name="rep-weekly"
+		<input type="checkbox" id="<?php echo $this->id; ?>" name="<?php echo $this->id; ?>"
 			<?php
 			if ( $is_checked ) {
 				echo 'checked';
 			}
 			?>
 		>
-		<label for="rep-weekly">Weekly event</label>
+		<label for="<?php echo $this->id; ?>">Weekly event</label>
 		<br>
 		<?php
 	}
@@ -77,26 +77,15 @@ class Weekly extends Custom_Post_Attribute {
 	}
 
 	/**
-	 * Method that does any action that should happen after a post is saved.
+	 * Method to save the data in the post meta.
 	 *
-	 * @param int $post_id id of the post.
+	 * @param int $post_id the post id.
+	 * @param array $data array of attribute id => value.
 	 */
-	public function after_save_post( int $post_id ) {
-		if ( isset( $_POST[$this->tag_id] ) ) { //phpcs:ignore
-			$this->update_value( $post_id , [ isset($_POST[$this->tag_id])] );
+	public function save_data( int $post_id, array $data) {
+		if ( isset( $data[$this->id] ) ) {
+			$this->update_value( $post_id , [ isset($data[$this->id])] );
 		}
 	}
 
-	/**
-	 * Method to process Form API information for this attribute
-	 *
-	 * @param int $post_id the post id.
-	 * @param array $fields array of record fields to process form information from.
-	 *
-	 */
-	public function after_elementor_form_submit( int $post_id , array $fields) {
-		$values = [$fields['weekly']];
-
-		$this->update_value( $post_id, $values);
-	}
 }

@@ -18,7 +18,7 @@ class Form_Processor {
 			return;
 		}
 
-		$is_valid_nonce = wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'rep_event_nonce' );
+		$is_valid_nonce = wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ), 'event_plugin_event_nonce' );
 
 		if ( ! $is_valid_nonce ) {
 			return;
@@ -26,13 +26,13 @@ class Form_Processor {
 
 		$event_type_creator = Event_Type_Creator::instance();
 
-		if ( isset( $_POST['rep-title'] ) ) {
-			$post_id = self::create_event_instance( sanitize_text_field( wp_unslash( $_POST['rep-title'] ) ) );
+		if ( isset( $_POST['event_plugin_title'] ) ) {
+			$post_id = self::create_event_instance( sanitize_text_field( wp_unslash( $_POST['event_plugin_title'] ) ) );
 		} else {
-			$post_id = '';
+			$post_id = self::create_event_instance( sanitize_text_field( wp_unslash( '' ) ) );
 		}
 
-		$event_type_creator->after_submit( $post_id );
+		$event_type_creator->save_event_data( $post_id , $_POST);
 
 		$result['type']      = 'success';
 		$result['permalink'] = get_the_permalink( $post_id );

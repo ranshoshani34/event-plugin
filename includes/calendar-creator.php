@@ -48,15 +48,14 @@ class Calendar_Creator {
 		/* print "blank" days until the first of the current week */
 		for ( $x = 0; $x < $running_day; $x ++ ) {
 			$calendar .= '<td class="calendar-day-np"> </td>';
-			$days_in_this_week ++;
+			$days_in_this_week++;
 		}
 
 		/* keep going with days.... */
-		for ( $list_day = 1; $list_day <= $num_days_in_month; $list_day ++ ) {
+		for ( $list_day = 1; $list_day <= $num_days_in_month; $list_day++ ) {
 			$current_date = mktime( 0, 0, 0, $month, $list_day, $year );
 			$calendar    .= '<td class="calendar-day">';
 			$calendar    .= '<div class="day-number">' . $list_day . '</div>';
-
 			$filtered_array = array_filter(
 				$events,
 				function ( $event ) use ( $current_date ) {
@@ -67,7 +66,6 @@ class Calendar_Creator {
 					return $event->get_date() === $current_date;
 				}
 			);
-
 			foreach ( $filtered_array as $event ) {
 				$calendar .= $event->generate_html_link() . '<br>';
 			}
@@ -84,9 +82,9 @@ class Calendar_Creator {
 				$running_day       = - 1;
 				$days_in_this_week = 0;
 			}
-			$days_in_this_week ++;
-			$running_day ++;
-			$day_counter ++;
+			$days_in_this_week++;
+			$running_day++;
+			$day_counter++;
 		}
 
 		/* fill in the rest of the days in the week */
@@ -108,7 +106,7 @@ class Calendar_Creator {
 	 * @return string
 	 */
 	public static function generate_calendar_html() : string {
-		return self::generate_month_picker() . '<br><br><div id="rep_calendar">' . self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) ) . '</div>';
+		return self::generate_month_picker() . '<br><br><div id="event_plugin_calendar">' . self::draw_calendar( gmdate( 'm' ), gmdate( 'Y' ) ) . '</div>';
 	}
 
 	/**
@@ -116,11 +114,11 @@ class Calendar_Creator {
 	 */
 	public static function respond_with_calendar() {
 
-		if ( ! isset( $_POST['rep_month'] ) ) { //phpcs:ignore
+		if ( ! isset( $_POST['event_plugin_month'] ) ) { //phpcs:ignore
 			return;
 		}
 
-		$new_date  = explode( '-', sanitize_text_field( wp_unslash( $_POST['rep_month'] ) ) ); //phpcs:ignore
+		$new_date  = explode( '-', sanitize_text_field( wp_unslash( $_POST['event_plugin_month'] ) ) ); //phpcs:ignore
 		$new_month = (int) $new_date[1];
 		$new_year  = (int) $new_date[0];
 
@@ -155,7 +153,7 @@ class Calendar_Creator {
 		$month        = gmdate( 'm' );
 		$year         = gmdate( 'Y' );
 		$current_time = $year . '-' . $month;
-		return '<form class="rep_month_picker"><input type="month" id="rep_month" name="rep_month" value="' . $current_time . '"><input type="submit" value="Change month"></form>';
+		return '<form class="event_plugin_month_picker"><input type="month" id="event_plugin_month" name="event_plugin_month" value="' . $current_time . '"><input type="submit" value="Change month"></form>';
 	}
 
 }

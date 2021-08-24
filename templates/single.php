@@ -8,6 +8,7 @@
 $attributes_manager = Attributes_Manager::instance();
 
 get_header();
+the_content();
 ?>
 
 <div id="primary" class="content-area">

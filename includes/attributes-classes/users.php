@@ -44,17 +44,19 @@ class Users extends Custom_Post_Attribute {
 			?>
 			<br>
 
-			<input type="checkbox" id="<?php echo esc_attr( $user_id ); ?>" name="<?php echo esc_attr( $user_id ); ?>"
+			<input type="checkbox" id="<?php echo esc_attr( 'event_plugin_users' . $user_id ); ?>" name="event_plugin_users[]" value="<?php echo $user_id; ?>"
 				<?php
 				if ( $is_checked ) {
 					echo 'checked';
 				}
 				?>
 			>
-			<label for="<?php echo esc_attr( $user_id ); ?>"><?php echo esc_html( $user->get( 'display_name' ) ); ?></label>
+			<label for="<?php echo esc_attr( 'event_plugin_users' . $user_id ); ?>"><?php echo esc_html( $user->get( 'display_name' ) ); ?></label>
 			<br>
 			<?php
 			$is_checked = false;
+			echo $this->generate_single_user_html_elementor($user_id, $user->get('display_name'));
+
 		}
 	}
 
@@ -80,41 +82,19 @@ class Users extends Custom_Post_Attribute {
 	public function update_value( int $post_id , array $values) : void {
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
-			update_post_meta( $post_id, $user_id, $values[$user_id] ); //phpcs:ignore
+			update_post_meta( $post_id, 'event-user' . $user_id, $values[$user_id] ); //phpcs:ignore
 		}
 	}
 
 	/**
-	 * Method that does any action that should happen after a post is saved.
-	 *
-	 * @param int $post_id id of the post.
-	 */
-	public function after_save_post( int $post_id ) {
-
-		$user_assignment_values = [];
-		foreach ( $this->users_array as $user ) {
-			$user_id = $user->get( 'ID' );
-			$user_assignment_values[$user_id] = isset($_POST[$user_id]);
-		}
-		
-		$this->update_value( $post_id , $user_assignment_values);
-		$this->send_mail_to_users( $post_id);
-	}
-
-	/**
-	 * Method to process Form API information for this attribute
+	 * Method to save the data in the post meta.
 	 *
 	 * @param int $post_id the post id.
-	 * @param array $fields array of record fields to process form information from.
+	 * @param array $data array of attribute id => value.
 	 */
-	public function after_elementor_form_submit(int $post_id, array $fields){
-		$values = [];
-		foreach ( $this->users_array as $user ) {
-			$user_id = $user->get( 'ID' );
-			$values[$user_id] = $fields[$user_id];
-		}
-
-		$this->update_value( $post_id , $values);
+	public function save_data( int $post_id, array $data ) {
+		$user_assignment_values = $this->parse_data($data['event_plugin_users']);
+		$this->update_value( $post_id , $user_assignment_values);
 		$this->send_mail_to_users( $post_id);
 	}
 
@@ -125,7 +105,7 @@ class Users extends Custom_Post_Attribute {
 
 			if ( $this->is_user_assigned( $user_id, $post_id ) && ! $this->is_user_mailed( $user_id, $post_id ) ) {
 				$emails[] = $user->get( 'user_email' );
-				update_post_meta( $post_id, $user_id . '-mailed', true );
+				update_post_meta( $post_id, 'event-user' .  $user_id . '-mailed', true );
 			}
 		}
 		$this->mail_user(
@@ -178,7 +158,7 @@ class Users extends Custom_Post_Attribute {
 	 * @return bool
 	 */
 	private function is_user_assigned( string $user_id, int $post_id ): bool {
-		return get_post_meta( $post_id, $user_id, true );
+		return get_post_meta( $post_id, 'event-user' . $user_id, true );
 	}
 
 	/**
@@ -190,6 +170,48 @@ class Users extends Custom_Post_Attribute {
 	 * @return bool
 	 */
 	private function is_user_mailed( string $user_id, int $post_id ): bool {
-		return get_post_meta( $post_id, $user_id . '-mailed', true );
+		return get_post_meta( $post_id, 'event-user' .  $user_id . '-mailed', true );
+	}
+
+	private function parse_data(array $data) : array {
+
+		$user_assignment_values = array();
+		foreach ( $this->users_array as $user ) {
+			$user_id = $user->get( 'ID' );
+			$user_assignment_values[$user_id] = false;
+		}
+
+		foreach ($data as $assigned_user_id){
+			$assigned_user_id = trim($assigned_user_id);
+			$user_assignment_values[$assigned_user_id] = true;
+		}
+		return $user_assignment_values;
+	}
+
+	public function echo_dynamic_users_elementor_form() {
+		?>
+
+
+		<div class="elementor-field-subgroup  ">
+		<?php
+		foreach ( $this->users_array as $user ) {
+			$user_id = $user->get( 'ID' );
+			?>
+
+					<span class="elementor-field-option">
+						<?php
+							echo $this->generate_single_user_html_elementor($user_id, $user->get('display_name'))
+						?>
+					</span>
+			<?php
+		}
+		?>
+				</div>
+		<?php
+	}
+
+	private function generate_single_user_html_elementor(int $user_id, string $username) : string {
+		return '<input type="checkbox" value="' . $user_id .'" id="form-field-event_plugin_users-' . $user_id . '" name="form_fields[event_plugin_users][]" aria-invalid="false"> 
+						<label for="form-field-event_plugin_users-' . $user_id . '">' . $username . '</label>';
 	}
 }
