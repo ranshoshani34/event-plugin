@@ -35,9 +35,10 @@ abstract class Custom_Post_Attribute {
 	/**
 	 * Description - method to update the database from the submitted form.
 	 *
-	 * @param int $post_id - the post id.
+	 * @param int   $post_id - the post id.
+	 * @param array $values - values to update.
 	 */
-	abstract public function update_value( int $post_id , array $values);
+	abstract public function update_value( int $post_id, array $values);
 
 	/**
 	 * Description - method to render the field about the attribute in the event page (single).
@@ -46,7 +47,11 @@ abstract class Custom_Post_Attribute {
 	 */
 	abstract public function render_single_field( int $post_id ) : void;
 
+	/**
+	 * Method to save the data in the post meta.
+	 *
+	 * @param int   $post_id the post id.
+	 * @param array $data array of attribute id => value.
+	 */
 	abstract public function save_data( int $post_id, array $data);
-
-
 }

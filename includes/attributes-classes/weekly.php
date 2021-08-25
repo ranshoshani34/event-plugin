@@ -13,7 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class Weekly.
  */
 class Weekly extends Custom_Post_Attribute {
+
+	/**
+	 * The id and name used for the html input and label.
+	 *
+	 * @var string
+	 */
 	private $id = 'event_plugin_weakly';
+
 	/**
 	 * Description - method to render a custom metabox to receive the attribute.
 	 *
@@ -27,14 +34,14 @@ class Weekly extends Custom_Post_Attribute {
 		$is_checked = ! empty( $is_checked ) && $is_checked;
 		?>
 		<br>
-		<input type="checkbox" id="<?php echo $this->id; ?>" name="<?php echo $this->id; ?>"
+		<input type="checkbox" id="<?php echo $this->id; ?>" name="<?php echo $this->id; //phpcs:ignore?>"
 			<?php
 			if ( $is_checked ) {
 				echo 'checked';
 			}
 			?>
 		>
-		<label for="<?php echo $this->id; ?>">Weekly event</label>
+		<label for="<?php echo $this->id; ?>">Weekly event</label> <?php //phpcs:ignore?>
 		<br>
 		<?php
 	}
@@ -52,10 +59,10 @@ class Weekly extends Custom_Post_Attribute {
 	/**
 	 * Method to update the database with the given values.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $values array of values to add to the database.
 	 */
-	public function update_value( int $post_id , array $values) : void {
+	public function update_value( int $post_id, array $values ) : void {
 		update_post_meta( $post_id, 'event-weekly', $values[0] );
 	}
 
@@ -83,12 +90,12 @@ class Weekly extends Custom_Post_Attribute {
 	/**
 	 * Method to save the data in the post meta.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $data array of attribute id => value.
 	 */
-	public function save_data( int $post_id, array $data) {
-		if ( isset( $data[$this->id] ) ) {
-			$this->update_value( $post_id , [ isset($data[$this->id])] );
+	public function save_data( int $post_id, array $data ) {
+		if ( isset( $data[ $this->id ] ) ) {
+			$this->update_value( $post_id, [ isset( $data[ $this->id ] ) ] );
 		}
 	}
 

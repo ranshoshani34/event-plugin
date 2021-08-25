@@ -13,6 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class Location.
  */
 class Location extends Custom_Post_Attribute {
+	/**
+	 * The id and name used for the html input and label.
+	 *
+	 * @var string
+	 */
 	private $id = 'event_plugin_location';
 
 	/**
@@ -20,7 +25,7 @@ class Location extends Custom_Post_Attribute {
 	 *
 	 * @param int $post_id -  (optional) the id of the post to retrieve old data from (if specified).
 	 */
-	public function render_metabox( int $post_id = 0) : void {
+	public function render_metabox( int $post_id = 0 ) : void {
 		if ( 0 !== $post_id ) {
 			$event_venue = $this->get_value( $post_id );
 		}
@@ -55,10 +60,10 @@ class Location extends Custom_Post_Attribute {
 	/**
 	 * Method to update the database with the given values.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $values array of values to add to the database.
 	 */
-	public function update_value( int $post_id ,array $values) : void {
+	public function update_value( int $post_id, array $values ) : void {
 
 		update_post_meta( $post_id, 'event-venue', $values[0] );//phpcs:ignore
 	}
@@ -78,12 +83,12 @@ class Location extends Custom_Post_Attribute {
 	/**
 	 * Method to save the data in the post meta.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $data array of attribute id => value.
 	 */
 	public function save_data( int $post_id, array $data ) {
-		if ( isset( $data[$this->id] ) ) {
-			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($data[$this->id]))] );
+		if ( isset( $data[ $this->id ] ) ) {
+			$this->update_value( $post_id, [ sanitize_text_field( wp_unslash( $data[ $this->id ] ) ) ] );
 		}
 	}
 }

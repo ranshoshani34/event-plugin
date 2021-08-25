@@ -1,6 +1,8 @@
 <?php
 /**
  * File to process event creation form.
+ *
+ * @package event-plugin.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,7 +39,7 @@ class Form_Processor {
 			$post_id = self::create_event_instance( sanitize_text_field( wp_unslash( '' ) ) );
 		}
 
-		$event_type_creator->save_event_data( $post_id , $_POST);
+		$event_type_creator->save_event_data( $post_id, $_POST );
 
 		$result['type']      = 'success';
 		$result['permalink'] = get_the_permalink( $post_id );

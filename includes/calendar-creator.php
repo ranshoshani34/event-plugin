@@ -57,9 +57,9 @@ class Calendar_Creator {
 
 		/* keep going with days.... */
 		for ( $list_day = 1; $list_day <= $num_days_in_month; $list_day++ ) {
-			$current_date = mktime( 0, 0, 0, $month, $list_day, $year );
-			$calendar    .= '<td class="calendar-day">';
-			$calendar    .= '<div class="day-number">' . $list_day . '</div>';
+			$current_date   = mktime( 0, 0, 0, $month, $list_day, $year );
+			$calendar      .= '<td class="calendar-day">';
+			$calendar      .= '<div class="day-number">' . $list_day . '</div>';
 			$filtered_array = array_filter(
 				$events,
 				function ( $event ) use ( $current_date ) {

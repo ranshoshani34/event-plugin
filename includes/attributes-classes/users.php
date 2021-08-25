@@ -40,7 +40,6 @@ class Users extends Custom_Post_Attribute {
 		<?php
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
-
 			if ( 0 !== $post_id ) {
 				$is_checked = $this->is_user_assigned( $user_id, $post_id );
 			}
@@ -48,7 +47,7 @@ class Users extends Custom_Post_Attribute {
 			?>
 			<br>
 
-			<input type="checkbox" id="<?php echo esc_attr( 'event_plugin_users' . $user_id ); ?>" name="event_plugin_users[]" value="<?php echo $user_id; ?>"
+			<input type="checkbox" id="<?php echo esc_attr( 'event_plugin_users' . $user_id ); ?>" name="event_plugin_users[]" value="<?php echo esc_attr( $user_id ); ?>"
 				<?php
 				if ( $is_checked ) {
 					echo 'checked';
@@ -79,10 +78,10 @@ class Users extends Custom_Post_Attribute {
 	/**
 	 * Method to update the database with the given values.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $values array of values to add to the database.
 	 */
-	public function update_value( int $post_id , array $values) : void {
+	public function update_value( int $post_id, array $values ) : void {
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
 			update_post_meta( $post_id, 'event-user' . $user_id, $values[$user_id] ); //phpcs:ignore
@@ -92,25 +91,30 @@ class Users extends Custom_Post_Attribute {
 	/**
 	 * Method to save the data in the post meta.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $data array of attribute id => value.
 	 */
 	public function save_data( int $post_id, array $data ) {
-		if (isset($data['event_plugin_users'])) {
+		if ( isset( $data['event_plugin_users'] ) ) {
 			$user_assignment_values = $this->parse_data( $data['event_plugin_users'] );
 			$this->update_value( $post_id, $user_assignment_values );
 			$this->send_mail_to_users( $post_id );
 		}
 	}
 
-	private function send_mail_to_users(int $post_id){
+	/**
+	 * Send mail to assigned users that haven't been mailed.
+	 *
+	 * @param int $post_id the post id.
+	 */
+	private function send_mail_to_users( int $post_id ) {
 		$emails = [];
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
 
 			if ( $this->is_user_assigned( $user_id, $post_id ) && ! $this->is_user_mailed( $user_id, $post_id ) ) {
 				$emails[] = $user->get( 'user_email' );
-				update_post_meta( $post_id, 'event-user' .  $user_id . '-mailed', true );
+				update_post_meta( $post_id, 'event-user' . $user_id . '-mailed', true );
 			}
 		}
 		$this->mail_user(
@@ -175,28 +179,37 @@ class Users extends Custom_Post_Attribute {
 	 * @return bool
 	 */
 	private function is_user_mailed( string $user_id, int $post_id ): bool {
-		return get_post_meta( $post_id, 'event-user' .  $user_id . '-mailed', true );
+		return get_post_meta( $post_id, 'event-user' . $user_id . '-mailed', true );
 	}
 
-	private function parse_data(array $data) : array {
+	/**
+	 * Transform the user id array to a boolean array (user_id => boolean).
+	 *
+	 * @param array $data received from the form. an array of user ids assigned.
+	 *
+	 * @return array
+	 */
+	private function parse_data( array $data ) : array {
 
-		$user_assignment_values = array();
+		$user_assignment_values = [];
 		foreach ( $this->users_array as $user ) {
-			$user_id = $user->get( 'ID' );
-			$user_assignment_values[$user_id] = false;
+			$user_id                            = $user->get( 'ID' );
+			$user_assignment_values[ $user_id ] = false;
 		}
 
-		foreach ($data as $assigned_user_id){
-			$assigned_user_id = trim($assigned_user_id);
-			$user_assignment_values[$assigned_user_id] = true;
+		foreach ( $data as $assigned_user_id ) {
+			$assigned_user_id                            = trim( $assigned_user_id );
+			$user_assignment_values[ $assigned_user_id ] = true;
 		}
 		return $user_assignment_values;
 	}
 
+	/**
+	 * Creates a section with users checkbox that changes dynamically as users are added and deleted.
+	 * Used in the elementor form widget as a custom field type.
+	 */
 	public function echo_dynamic_users_elementor_form() {
 		?>
-
-
 		<div class="elementor-field-subgroup  ">
 		<?php
 		foreach ( $this->users_array as $user ) {
@@ -205,7 +218,7 @@ class Users extends Custom_Post_Attribute {
 
 					<span class="elementor-field-option">
 						<?php
-							echo $this->generate_single_user_html_elementor($user_id, $user->get('display_name'))
+							echo $this->generate_single_user_html_elementor( $user_id, $user->get( 'display_name' ) )//phpcs:ignore
 						?>
 					</span>
 			<?php
@@ -215,8 +228,16 @@ class Users extends Custom_Post_Attribute {
 		<?php
 	}
 
-	private function generate_single_user_html_elementor(int $user_id, string $username) : string {
-		return '<input type="checkbox" value="' . $user_id .'" id="form-field-event_plugin_users-' . $user_id . '" name="form_fields[event_plugin_users][]" aria-invalid="false"> 
-						<label for="form-field-event_plugin_users-' . $user_id . '">' . $username . '</label>';
+	/**
+	 * Generates html checkbox input and label for a single user.
+	 *
+	 * @param int    $user_id the user ID.
+	 * @param string $username the user display name.
+	 *
+	 * @return string
+	 */
+	private function generate_single_user_html_elementor( int $user_id, string $username ) : string {
+		return '<input type="checkbox" value="' . esc_attr( $user_id ) . '" id="form-field-event_plugin_users-' . esc_attr( $user_id ) . '" name="form_fields[event_plugin_users][]" aria-invalid="false"> 
+						<label for="form-field-event_plugin_users-' . esc_attr( $user_id ) . '">' . esc_html( $username ) . '</label>';
 	}
 }

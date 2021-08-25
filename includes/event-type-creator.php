@@ -10,7 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 require_once 'attributes-manager.php';
-require_once 'custom_post_status.php';
+require_once 'custom-post-status.php';
 
 /**
  * Class Event_Type_Creator for creating the events custom post type.
@@ -64,14 +64,15 @@ class Event_Type_Creator {
 			'archive',
 			'Archive',
 			'event',
-			array(
+			[
 				'label'                     => _x( 'Completed', 'post' ),
-				'label_count'               => _n_noop( 'Archived <span class="count">(%s)</span>', 'Archived <span class="count">(%s)</span>'),
+				// translators: .
+				'label_count'               => _n_noop( 'Archived <span class="count">(%s)</span>', 'Archived <span class="count">(%s)</span>' ),
 				'public'                    => false,
 				'exclude_from_search'       => false,
 				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true
-			)
+				'show_in_admin_status_list' => true,
+			]
 		);
 		$archive->register();
 	}
@@ -137,7 +138,12 @@ class Event_Type_Creator {
 		}
 	}
 
-	public function save_data_from_dashboard(int $post_id){
+	/**
+	 * Saves the data submitted through dashboard event creation.
+	 *
+	 * @param int $post_id the post id.
+	 */
+	public function save_data_from_dashboard( int $post_id ) {
 		if ( isset( $_POST['post_type'] ) ) {
 			if ( 'event' !== $_POST['post_type'] ) {
 				return;
@@ -152,13 +158,19 @@ class Event_Type_Creator {
 				return;
 			}
 
-			$this->save_event_data($post_id, $_POST);
+			$this->save_event_data( $post_id, $_POST );
 		}
 	}
 
-	public function save_event_data( int $post_id , array $data) {
+	/**
+	 * Saves the event data for every attribute.
+	 *
+	 * @param int   $post_id the post id.
+	 * @param array $data in the form of field_name => data.
+	 */
+	public function save_event_data( int $post_id, array $data ) {
 		foreach ( $this->attributes_manager->attributes_array as $attribute ) {
-			$attribute->save_data( $post_id , $data);
+			$attribute->save_data( $post_id, $data );
 		}
 	}
 
@@ -173,8 +185,13 @@ class Event_Type_Creator {
 		}
 	}
 
-	public function register_new_attribute(Custom_Post_Attribute $attribute){
-		$this->attributes_manager->register_new_attribute($attribute);
+	/**
+	 * Method for extending functionality and adding new event attribute.
+	 *
+	 * @param Custom_Post_Attribute $attribute an instance of a class that inherits Custom_Post_Attribute.
+	 */
+	public function register_new_attribute( Custom_Post_Attribute $attribute ) {
+		$this->attributes_manager->register_new_attribute( $attribute );
 	}
 
 }

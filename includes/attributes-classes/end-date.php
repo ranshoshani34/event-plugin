@@ -13,6 +13,12 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class End_Date.
  */
 class End_Date extends Custom_Post_Attribute {
+
+	/**
+	 * The id and name used for the html input and label.
+	 *
+	 * @var string
+	 */
 	private $id = 'event_plugin_end_date';
 
 	/**
@@ -27,9 +33,8 @@ class End_Date extends Custom_Post_Attribute {
 
 		$event_end_date = ! empty( $event_end_date ) ? $event_end_date : time();
 		?>
-		<label for="<?php echo $this->id; //phpcs:ignore?>"><?php esc_html_e( 'Event End Date:', 'event-plugin' ); ?>
-		</label>
 		<input class="widefat <?php echo $this->id; //phpcs:ignore?>" id="<?php echo $this->id; ?>" type="date" name="<?php echo $this->id; ?>" placeholder="Format: February 18, 2014" value="<?php echo esc_html( gmdate( 'Y-m-d', $event_end_date ) ); ?>">
+		<label for="<?php echo $this->id; ?>"><?php esc_html_e( 'Event End Date:', 'event-plugin' ); //phpcs:ignore?></label>
 		<?php
 
 	}
@@ -48,10 +53,10 @@ class End_Date extends Custom_Post_Attribute {
 	/**
 	 * Method to update the database with the given values.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $values array of values to add to the database.
 	 */
-	public function update_value( int $post_id , array $values) : void {
+	public function update_value( int $post_id, array $values ) : void {
 		update_post_meta( $post_id, 'event-end-date', strtotime($values[0]));//phpcs:ignore
 	}
 
@@ -73,12 +78,12 @@ class End_Date extends Custom_Post_Attribute {
 	/**
 	 * Method to save the data in the post meta.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $data array of attribute id => value.
 	 */
 	public function save_data( int $post_id, array $data ) {
-		if ( isset( $data[$this->id] ) ) {
-			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($data[$this->id]))] );
+		if ( isset( $data[ $this->id ] ) ) {
+			$this->update_value( $post_id, [ sanitize_text_field( wp_unslash( $data[ $this->id ] ) ) ] );
 		}
 	}
 }

@@ -13,6 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class Detail
  */
 class Details extends Custom_Post_Attribute {
+	/**
+	 * The id and name used for the html input and label.
+	 *
+	 * @var string
+	 */
 	private $id = 'event_plugin_details';
 
 

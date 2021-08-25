@@ -50,22 +50,22 @@ class Event_Creator_Widget extends Elementor\Widget_Base {
 		// generate a nonce field.
 		$nonce = wp_create_nonce( 'event_plugin_event_nonce' );
 
-		$title_id = 'event_plugin_title';
+		$title_id           = 'event_plugin_title';
 		$event_type_creator = Event_Type_Creator::instance();
 		?>
 			<form action="" method="post" class="js_create_event_form" nonce="<?php echo $nonce; //phpcs:ignore?>">
 				<label
-						for="<?php echo $title_id; ?>"><?php esc_html_e( 'Event Title:', 'event-plugin' ); ?>
+						for="<?php echo $title_id; //phpcs:ignore ?>"><?php esc_html_e( 'Event Title:', 'event-plugin' ); ?>
 				</label>
 				<input
 						class="widefat"
-						id="<?php echo $title_id; ?>"
+						id="<?php echo $title_id; //phpcs:ignore ?>"
 						type="text"
-						name="<?php echo $title_id; ?>"
+						name="<?php echo $title_id;  //phpcs:ignore ?>"
 				/><br><br>
 		<?php
 
-		$event_type_creator->echo_form_html(); //phpcs:ignore
+		$event_type_creator->echo_form_html();
 		?>
 			<br>
 			<input type="submit" value="Submit">

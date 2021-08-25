@@ -13,6 +13,11 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Class Start_Date.
  */
 class Start_Date extends Custom_Post_Attribute {
+	/**
+	 * The id and name used for the html input and label.
+	 *
+	 * @var string
+	 */
 	private $id = 'event_plugin_start_date';
 
 
@@ -33,7 +38,7 @@ class Start_Date extends Custom_Post_Attribute {
 		</label>
 		<input
 			class="widefat"
-			id="<?php echo $this->id; //phpcs:ignore?>"
+			id="<?php echo $this->id; //phpcs:ignore ?>"
 			type="date"
 			name="<?php echo $this->id; //phpcs:ignore?>"
 			value="<?php echo esc_html( gmdate( 'Y-m-d', $event_start_date ) ); ?>"
@@ -55,10 +60,10 @@ class Start_Date extends Custom_Post_Attribute {
 	/**
 	 * Method to update the database with the given values.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $values array of values to add to the database.
 	 */
-	public function update_value( int $post_id , array $values) : void {
+	public function update_value( int $post_id, array $values ) : void {
 		update_post_meta( $post_id, 'event-start-date', strtotime( $values[0] )); //phpcs:ignore
 	}
 
@@ -77,12 +82,12 @@ class Start_Date extends Custom_Post_Attribute {
 	/**
 	 * Method to save the data in the post meta.
 	 *
-	 * @param int $post_id the post id.
+	 * @param int   $post_id the post id.
 	 * @param array $data array of attribute id => value.
 	 */
 	public function save_data( int $post_id, array $data ) {
-		if ( isset( $data[$this->id] ) ) {
-			$this->update_value( $post_id , [ sanitize_text_field( wp_unslash($data[$this->id]))] );
+		if ( isset( $data[ $this->id ] ) ) {
+			$this->update_value( $post_id, [ sanitize_text_field( wp_unslash( $data[ $this->id ] ) ) ] );
 		}
 	}
 }

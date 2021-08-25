@@ -210,17 +210,19 @@ final class Event_Plugin {
 	 */
 	public function elementor_init() {
 		add_action( 'elementor/init', [ $this, 'add_actions_elementor' ] );
-		add_action( 'elementor_pro/init', [$this, 'add_form_action']);
+		add_action( 'elementor_pro/init', [ $this, 'add_form_action' ] );
 	}
 
-	public function add_form_action(){
+	/**
+	 * Adds Create Event Form action and Users field to elementor pro Form widget.
+	 */
+	public function add_form_action() {
 		require_once WP_PLUGIN_DIR . '/event-plugin/includes/create-event-form-action.php';
 		require_once WP_PLUGIN_DIR . '/event-plugin/includes/user-form-field.php';
 
-		$action = new Event_Form_Action();
+		$action     = new Event_Form_Action();
 		$user_field = new User_Form_Field();
 
-		// Register the action with form widget
 		ElementorPro\Plugin::instance()->modules_manager->get_modules( 'forms' )->add_form_action( $action->get_name(), $action );
 		ElementorPro\Plugin::instance()->modules_manager->get_modules( 'forms' )->add_form_field_type( $user_field->get_name(), $user_field );
 	}
@@ -290,11 +292,11 @@ final class Event_Plugin {
 
 		// Include Control files.
 		// todo
-		// require_once __DIR__ . '/controls/test-control.php';
+		// require_once __DIR__ . '/controls/test-control.php';.
 
 		// Register control.
 		// todo
-		// \Elementor\Plugin::$instance->controls_manager->register_control( 'control-type-', new \Test_Control() );
+		// \Elementor\Plugin::$instance->controls_manager->register_control( 'control-type-', new \Test_Control() );.
 	}
 
 	/**
@@ -379,7 +381,6 @@ final class Event_Plugin {
 		$event_type_creator->initialize();
 
 		Template_Manager::initialize();
-
 
 	}
 
