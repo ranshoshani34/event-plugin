@@ -1,9 +1,10 @@
 /* calendar */
 table.calendar {
 	border-left:1px solid #999;
+	table-layout: fixed;
 }
 tr.calendar-row	{
-
+	font-size:20px;
 }
 td.calendar-day	{
 	min-height:80px;
