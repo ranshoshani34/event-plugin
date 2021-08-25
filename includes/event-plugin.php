@@ -282,24 +282,6 @@ final class Event_Plugin {
 	}
 
 	/**
-	 * Init Controls
-	 * Include controls files and register them
-	 *
-	 * @since 1.0.0
-	 * @access public
-	 */
-	public function init_controls() {
-
-		// Include Control files.
-		// todo
-		// require_once __DIR__ . '/controls/test-control.php';.
-
-		// Register control.
-		// todo
-		// \Elementor\Plugin::$instance->controls_manager->register_control( 'control-type-', new \Test_Control() );.
-	}
-
-	/**
 	 * Admin notice
 	 * Warning when the site doesn't have Elementor installed or activated.
 	 *

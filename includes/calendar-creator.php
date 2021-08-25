@@ -107,13 +107,12 @@ class Calendar_Creator {
 	/**
 	 * Method to generate the necessary html to render the calendar.
 	 *
-	 * @param int $month the month to display.
-	 * @param int $year the year to dispaly.
+	 * @param int $date timestamp of the date to display.
 	 *
 	 * @return string
 	 */
-	public static function generate_calendar_html(int $date) : string {
-		return self::generate_month_picker($date)  . self::generate_calendar_header_html($date) . '<br><br><div id="event_plugin_calendar">' . self::draw_calendar( gmdate( 'm' , $date), gmdate( 'Y' , $date) ) . '</div>';
+	public static function generate_calendar_html( int $date ) : string {
+		return self::generate_month_picker( $date ) . self::generate_calendar_header_html( $date ) . '<br><br><div id="event_plugin_calendar">' . self::draw_calendar( gmdate( 'm', $date ), gmdate( 'Y', $date ) ) . '</div>';
 	}
 
 	/**
@@ -144,24 +143,24 @@ class Calendar_Creator {
 	/**
 	 * Method to render a header with month and year information.
 	 *
-	 * @param int $date the date to render
+	 * @param int $date the date to render.
 	 *
 	 * @return string
 	 */
-	public static function generate_calendar_header_html(int $date) : string {
-		return '<h2>' . gmdate( 'F' , $date) . ' ' . gmdate( 'Y' , $date) . '</>';
+	public static function generate_calendar_header_html( int $date ) : string {
+		return '<h2>' . gmdate( 'F', $date ) . ' ' . gmdate( 'Y', $date ) . '</>';
 	}
 
 	/**
 	 * Method to return the html string for the month picker that changes the month in the calendar dynamically.
 	 *
-	 * @param int $date the date to render
+	 * @param int $date the date to render.
 	 *
 	 * @return string the html for the month picker.
 	 */
-	private static function generate_month_picker(int $date) : string {
-		$month        = gmdate( 'm' , $date);
-		$year         = gmdate( 'Y' , $date);
+	private static function generate_month_picker( int $date ) : string {
+		$month        = gmdate( 'm', $date );
+		$year         = gmdate( 'Y', $date );
 		$current_time = $year . '-' . $month;
 		return '<form class="event_plugin_month_picker"><input type="month" id="event_plugin_month" name="event_plugin_month" value="' . $current_time . '"><input type="submit" value="Change month"></form>';
 	}
