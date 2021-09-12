@@ -17,6 +17,26 @@ require_once 'event-data.php';
 class Calendar_Creator {
 
 	/**
+	 * Get an array of Event_Data representing the current events
+	 *
+	 * @return array
+	 */
+	public static function get_events() : array {
+		$events = [];
+
+		$query = new WP_Query( [ 'post_type' => 'event' ] );
+
+		while ( $query->have_posts() ) {
+			$query->the_post();
+			$event_start_date = get_post_meta( get_the_ID(), 'event_plugin_start_date', true );
+			$event_is_weekly = get_post_meta( get_the_ID(), 'event_plugin_weakly', true );
+			$events[] = new Event_Data( (int) $event_start_date, get_the_permalink(), get_the_title(), $event_is_weekly );
+		}
+
+		return $events;
+	}
+
+	/**
 	 * Method to draw the calendar as html.
 	 *
 	 * @param int $month - The month to draw (1 - 12).
@@ -25,16 +45,8 @@ class Calendar_Creator {
 	 * @return string
 	 */
 	public static function draw_calendar( int $month, int $year ): string {
-		$events = [];
 
-		$query = new WP_Query( [ 'post_type' => 'event' ] );
-
-		while ( $query->have_posts() ) {
-			$query->the_post();
-			$event_start_date = get_post_meta( get_the_ID(), 'event-start-date', true );
-			$event_is_weekly  = get_post_meta( get_the_ID(), 'event-weekly', true );
-			$events[]         = new Event_Data( (int) $event_start_date, get_the_permalink(), get_the_title(), $event_is_weekly );
-		}
+		$events = self::get_events();
 
 		$calendar = '<table class="calendar">';
 

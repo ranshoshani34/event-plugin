@@ -19,7 +19,7 @@ define( 'EVENT_PLUGIN_ROOT', plugins_url( '', __FILE__ ) );
 
 require_once 'includes/event-type-creator.php';
 require_once 'includes/template-manager.php';
-require_once 'includes/event-plugin.php';
+require_once 'includes/event-plugin-class.php';
 
 Event_Plugin::instance();
 

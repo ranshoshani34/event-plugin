@@ -238,7 +238,6 @@ final class Event_Plugin {
 		add_action( 'elementor/controls/controls_registered', [ $this, 'init_controls' ] );
 		$this->add_ajax_actions_elementor();
 		$this->add_ajax_actions();
-
 	}
 
 	/**

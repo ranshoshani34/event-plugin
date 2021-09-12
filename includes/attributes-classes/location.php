@@ -54,7 +54,7 @@ class Location extends Custom_Post_Attribute {
 	 * @return string
 	 */
 	public function get_value( int $post_id ) : string {
-		return get_post_meta( $post_id, 'event-venue', true );
+		return get_post_meta( $post_id, $this->id, true );
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Location extends Custom_Post_Attribute {
 	 */
 	public function update_value( int $post_id, array $values ) : void {
 
-		update_post_meta( $post_id, 'event-venue', $values[0] );//phpcs:ignore
+		update_post_meta( $post_id, $this->id, $values[0] );//phpcs:ignore
 	}
 
 	/**

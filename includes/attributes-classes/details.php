@@ -47,7 +47,7 @@ class Details extends Custom_Post_Attribute {
 	 * @return string
 	 */
 	public function get_value( int $post_id ) : string {
-		return get_post_meta( $post_id, 'event-details', true );
+		return get_post_meta( $post_id, $this->id, true );
 	}
 
 	/**
@@ -57,7 +57,7 @@ class Details extends Custom_Post_Attribute {
 	 * @param array $values array of values to add to the database.
 	 */
 	public function update_value( int $post_id , array $values) : void {
-		update_post_meta( $post_id, 'event-details', $values[0]);//phpcs:ignore
+		update_post_meta( $post_id, $this->id, $values[0]);//phpcs:ignore
 	}
 
 	/**

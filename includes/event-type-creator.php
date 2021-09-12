@@ -144,22 +144,42 @@ class Event_Type_Creator {
 	 * @param int $post_id the post id.
 	 */
 	public function save_data_from_dashboard( int $post_id ) {
-		if ( isset( $_POST['post_type'] ) ) {
-			if ( 'event' !== $_POST['post_type'] ) {
-				return;
-			}
-			// checking for the 'save' status.
-			$is_autosave    = wp_is_post_autosave( $post_id );
-			$is_revision    = wp_is_post_revision( $post_id );
-			$is_valid_nonce = isset( $_POST['event_plugin_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['event_plugin_nonce'] ) ), basename( EVENT_PLUGIN_ROOT ) );
 
-			// exit depending on the save status or if the nonce is not valid.
-			if ( $is_autosave || $is_revision || ! $is_valid_nonce ) {
-				return;
-			}
-
-			$this->save_event_data( $post_id, $_POST );
+		if ( ! $this->is_valid_event($post_id)){
+			return;
 		}
+
+		$this->save_event_data( $post_id, $_POST );
+	}
+
+	/**
+	 * Checks if a post is a valid event and the data should be saved in the meta.
+	 *
+	 * @param int $post_id the post id.
+	 *
+	 * @return bool
+	 */
+	public function is_valid_event( int $post_id ) : bool{
+		if ( ! isset( $_POST['post_type'] ) ) {
+			return false;
+
+		}
+
+		if ( 'event' !== $_POST['post_type'] ) {
+			return false;
+		}
+
+		// checking for the 'save' status.
+		$is_autosave    = wp_is_post_autosave( $post_id );
+		$is_revision    = wp_is_post_revision( $post_id );
+		$is_valid_nonce = isset( $_POST['event_plugin_nonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['event_plugin_nonce'] ) ), basename( EVENT_PLUGIN_ROOT ) );
+
+		// exit depending on the save status or if the nonce is not valid.
+		if ( $is_autosave || $is_revision || ! $is_valid_nonce ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -192,6 +212,27 @@ class Event_Type_Creator {
 	 */
 	public function register_new_attribute( Custom_Post_Attribute $attribute ) {
 		$this->attributes_manager->register_new_attribute( $attribute );
+	}
+
+	/**
+	 * Method to create event.
+	 *
+	 * @param string $title title of the new post.
+	 *
+	 * @return int the post id that was created.
+	 */
+	public static function create_event_instance( string $title ): int {
+		// insert the post and set the category.
+		return wp_insert_post(
+			[
+				'post_type'      => 'event',
+				'post_title'     => $title,
+				'post_content'   => '',
+				'post_status'    => 'publish',
+				'comment_status' => 'closed',
+				'ping_status'    => 'closed',
+			]
+		);
 	}
 
 }

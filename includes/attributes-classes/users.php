@@ -82,6 +82,8 @@ class Users extends Custom_Post_Attribute {
 	 * @param array $values array of values to add to the database.
 	 */
 	public function update_value( int $post_id, array $values ) : void {
+		$this->users_array = get_users();
+
 		foreach ( $this->users_array as $user ) {
 			$user_id = $user->get( 'ID' );
 			update_post_meta( $post_id, 'event-user' . $user_id, $values[$user_id] ); //phpcs:ignore

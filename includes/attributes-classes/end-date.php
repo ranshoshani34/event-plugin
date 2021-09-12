@@ -33,8 +33,8 @@ class End_Date extends Custom_Post_Attribute {
 
 		$event_end_date = ! empty( $event_end_date ) ? $event_end_date : time();
 		?>
-		<input class="widefat <?php echo $this->id; //phpcs:ignore?>" id="<?php echo $this->id; ?>" type="date" name="<?php echo $this->id; ?>" placeholder="Format: February 18, 2014" value="<?php echo esc_html( gmdate( 'Y-m-d', $event_end_date ) ); ?>">
 		<label for="<?php echo $this->id; ?>"><?php esc_html_e( 'Event End Date:', 'event-plugin' ); //phpcs:ignore?></label>
+		<input class="widefat <?php echo $this->id; //phpcs:ignore?>" id="<?php echo $this->id; ?>" type="date" name="<?php echo $this->id; ?>" placeholder="Format: February 18, 2014" value="<?php echo esc_html( gmdate( 'Y-m-d', $event_end_date ) ); ?>">
 		<?php
 
 	}
@@ -47,7 +47,7 @@ class End_Date extends Custom_Post_Attribute {
 	 * @return string
 	 */
 	public function get_value( int $post_id ): string {
-		return get_post_meta( $post_id, 'event-end-date', true );
+		return get_post_meta( $post_id, $this->id, true );
 	}
 
 	/**
@@ -57,7 +57,7 @@ class End_Date extends Custom_Post_Attribute {
 	 * @param array $values array of values to add to the database.
 	 */
 	public function update_value( int $post_id, array $values ) : void {
-		update_post_meta( $post_id, 'event-end-date', strtotime($values[0]));//phpcs:ignore
+		update_post_meta( $post_id, $this->id, strtotime($values[0]));//phpcs:ignore
 	}
 
 	/**

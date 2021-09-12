@@ -53,7 +53,7 @@ class Weekly extends Custom_Post_Attribute {
 	 * @return string
 	 */
 	public function get_value( int $post_id ) : string {
-		return get_post_meta( $post_id, 'event-weekly', true );
+		return get_post_meta( $post_id, $this->id, true );
 	}
 
 	/**
@@ -63,9 +63,8 @@ class Weekly extends Custom_Post_Attribute {
 	 * @param array $values array of values to add to the database.
 	 */
 	public function update_value( int $post_id, array $values ) : void {
-		update_post_meta( $post_id, 'event-weekly', $values[0] );
+		update_post_meta( $post_id, $this->id, $values[0] );
 	}
-
 
 	/**
 	 * Description - method to render the field about the attribute in the event page (single).

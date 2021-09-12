@@ -34,9 +34,9 @@ class Form_Processor {
 		$event_type_creator = Event_Type_Creator::instance();
 
 		if ( isset( $_POST['event_plugin_title'] ) ) {
-			$post_id = self::create_event_instance( sanitize_text_field( wp_unslash( $_POST['event_plugin_title'] ) ) );
+			$post_id = Event_Type_Creator::create_event_instance( sanitize_text_field( wp_unslash( $_POST['event_plugin_title'] ) ) );
 		} else {
-			$post_id = self::create_event_instance( sanitize_text_field( wp_unslash( '' ) ) );
+			$post_id = Event_Type_Creator::create_event_instance( sanitize_text_field( wp_unslash( '' ) ) );
 		}
 
 		$event_type_creator->save_event_data( $post_id, $_POST );
@@ -53,25 +53,6 @@ class Form_Processor {
 		die();
 	}
 
-	/**
-	 * Method to create event.
-	 *
-	 * @param string $title title of the new post.
-	 *
-	 * @return int the post id that was created.
-	 */
-	public static function create_event_instance( string $title ): int {
-		// insert the post and set the category.
-		return wp_insert_post(
-			[
-				'post_type'      => 'event',
-				'post_title'     => $title,
-				'post_content'   => '',
-				'post_status'    => 'publish',
-				'comment_status' => 'closed',
-				'ping_status'    => 'closed',
-			]
-		);
-	}
+
 
 }
